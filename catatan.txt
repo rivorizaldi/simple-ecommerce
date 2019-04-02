@@ -1,0 +1,11 @@
+warna harga #ff9a7a
+warna header #ffffff
+open sans font
+
+#fa591D
+#ff5722
+
+#494d52
+#424242
+
+#03ac0e

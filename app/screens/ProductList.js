@@ -12,8 +12,9 @@ class ProductList extends Component {
                     key: "a",
                     name: "Blue T-Shirt",
                     price: "Rp. 100.000",
-					path: require("../assets/img/blue-t-shirt.jpg"),
-					description : "Kaos Polos Bahan Asli Cotton Combed 30s Bandung Ukuran S.M.L"
+                    path: require("../assets/img/blue-t-shirt.jpg"),
+                    description:
+                        "Kaos Polos Bahan Asli Cotton Combed 30s Bandung Ukuran S.M.L"
                 },
                 {
                     key: "b",
@@ -63,9 +64,10 @@ class ProductList extends Component {
 
     render() {
         return (
-            <Container style={{ marginTop: 8 }}>
+            <Container>
                 <FlatList
                     columnWrapperStyle={{
+                        marginTop: 8,
                         marginLeft: 8,
                         alignItems: "space-between"
                     }}

@@ -1,33 +1,87 @@
 import React, { Component } from "react";
-import { createAppContainer, createStackNavigator } from "react-navigation";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import {
+    createAppContainer,
+    createBottomTabNavigator,
+    createStackNavigator
+} from "react-navigation";
+import Cart from "./app/screens/Cart";
 import DetailProduct from "./app/screens/DetailProduct";
 import ProductList from "./app/screens/ProductList";
 
-const AppNavigator = createStackNavigator(
+const AppTabNavigator = createBottomTabNavigator(
     {
         Homescreen: {
             screen: ProductList,
             navigationOptions: () => ({
-                title: "Product List",
-                headerStyle: {
-                    backgroundColor: "#5067FF"
-                },
-                headerTintColor: "#fff"
+                tabBarLabel: "Home"
             })
         },
-        Detailscreen: {
-            screen: DetailProduct,
+        CartScreen: {
+            screen: Cart,
             navigationOptions: () => ({
-                title: "Detail Product",
-                headerStyle: {
-                    backgroundColor: "#5067FF"
-                },
-                headerTintColor: "#fff"
+                title: "Cart"
             })
         }
     },
     {
-        initialRouteName: "Homescreen"
+        defaultNavigationOptions: ({ navigation }) => ({
+            tabBarIcon: ({ tintColor }) => {
+                const { routeName } = navigation.state;
+                let IconComponent = AntDesign;
+                let iconName;
+                if (routeName === "Homescreen") {
+                    iconName = "home";
+                } else if (routeName === "CartScreen") {
+                    iconName = `shoppingcart`;
+                }
+
+                return (
+                    <IconComponent
+                        name={iconName}
+                        size={25}
+                        color={tintColor}
+                    />
+                );
+            }
+        }),
+
+        tabBarOptions: {
+            activeTintColor: "#03ac0e",
+            inactiveTintColor: "#494d52"
+        }
+    }
+);
+
+AppTabNavigator.navigationOptions = ({ navigation }) => {
+    let { routeName } = navigation.state.routes[navigation.state.index];
+
+    let title;
+    if (routeName === "Homescreen") {
+        title = "Product List";
+    } else if (routeName === "CartScreen") {
+        title = "Cart";
+    }
+    return { title };
+};
+
+const AppNavigator = createStackNavigator(
+    {
+        TabHome: AppTabNavigator,
+        Detailscreen: {
+            screen: DetailProduct,
+            navigationOptions: () => ({
+                title: "Product Details",
+                headerStyle: {
+                    backgroundColor: "#fff"
+                },
+                headerTintColor: "#000",
+                tabBarVisible: "false"
+            })
+        }
+    },
+    {
+        initialRouteName: "TabHome"
     }
 );
 

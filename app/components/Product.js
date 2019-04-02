@@ -11,11 +11,7 @@ class Product extends Component {
                     <CardItem cardBody>
                         <Image
                             source={this.props.productPhoto}
-                            style={{
-                                height: 150,
-                                width: null,
-                                flex: 1
-                            }}
+                            style={styles.itemImage}
                         />
                     </CardItem>
                     <CardItem style={styles.cardItemText}>
@@ -25,7 +21,9 @@ class Product extends Component {
                     </CardItem>
                     <CardItem style={styles.cardItemText}>
                         <Left>
-                            <Text>{this.props.productPrice}</Text>
+                            <Text style={styles.itemPrice}>
+                                {this.props.productPrice}
+                            </Text>
                         </Left>
                     </CardItem>
                 </TouchableOpacity>
@@ -44,6 +42,17 @@ const styles = StyleSheet.create({
         paddingBottom: 8,
         paddingLeft: 8,
         paddingRight: 8
+    },
+    itemImage: {
+        height: 150,
+        width: null,
+        flex: 1
+    },
+    itemPrice: {
+        color: "#ff5722"
+    },
+    itemName: {
+        color: "#494d52"
     }
 });
 
