@@ -22,7 +22,7 @@ class Product extends Component {
                     <CardItem style={styles.cardItemText}>
                         <Left>
                             <Text style={styles.itemPrice}>
-                                {this.props.productPrice}
+                                Rp. {this.props.productPrice}
                             </Text>
                         </Left>
                     </CardItem>

@@ -11,7 +11,7 @@ class ProductList extends Component {
                 {
                     key: "a",
                     name: "Blue T-Shirt",
-                    price: "Rp. 100.000",
+                    price: 100000,
                     path: require("../assets/img/blue-t-shirt.jpg"),
                     description:
                         "Kaos Polos Bahan Asli Cotton Combed 30s Bandung Ukuran S.M.L"
@@ -19,43 +19,43 @@ class ProductList extends Component {
                 {
                     key: "b",
                     name: "Bright Purple T-Shirt",
-                    price: "Rp. 100.000",
+                    price: 100000,
                     path: require("../assets/img/bright-purple-t-shirt.jpg")
                 },
                 {
                     key: "c",
                     name: "Cobalt Blue T-Shirt",
-                    price: "Rp. 100.000",
+                    price: 100000,
                     path: require("../assets/img/cobalt-blue-t-shirt.jpg")
                 },
                 {
                     key: "d",
                     name: "Green T-Shirt",
-                    price: "Rp. 100.000",
+                    price: 100000,
                     path: require("../assets/img/green-t-shirt.jpg")
                 },
                 {
                     key: "e",
                     name: "Grey T-Shirt",
-                    price: "Rp. 100.000",
+                    price: 100000,
                     path: require("../assets/img/grey-t-shirt.jpg")
                 },
                 {
                     key: "f",
                     name: "Purple T-Shirt",
-                    price: "Rp. 100.000",
+                    price: 100000,
                     path: require("../assets/img/purple-t-shirt.jpg")
                 },
                 {
                     key: "g",
                     name: "Red T-Shirt",
-                    price: "Rp. 100.000",
+                    price: 100000,
                     path: require("../assets/img/red-t-shirt.jpg")
                 },
                 {
                     key: "h",
                     name: "Teal T-Shirt",
-                    price: "Rp. 100.000",
+                    price: 100000,
                     path: require("../assets/img/teal-t-shirt.jpg")
                 }
             ]

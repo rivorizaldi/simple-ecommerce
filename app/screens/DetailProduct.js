@@ -1,29 +1,9 @@
-import {
-    Body,
-    Button,
-    Card,
-    CardItem,
-    Container,
-    Fab,
-    Footer,
-    H1,
-    H3,
-    Icon,
-    Left,
-    Right,
-    Text
-} from "native-base";
+import { Button, Container, Footer, Text } from "native-base";
 import React, { Component } from "react";
-import { FlatList, Image, ScrollView, StyleSheet } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
+import Details from "../components/Details";
 
-class ProductList extends Component {
-    constructor() {
-        super();
-        this.state = {
-            list: []
-        };
-    }
-
+class DetailProduct extends Component {
     render() {
         const { navigation } = this.props;
         const getProductImage = navigation.getParam("productImage", "No Image");
@@ -42,153 +22,27 @@ class ProductList extends Component {
                         }
                     ]}
                     renderItem={({ item }) => (
-                        <ScrollView>
-                            <Card>
-                                <CardItem cardBody>
-                                    <Image
-                                        source={item.productImage}
-                                        style={{
-                                            flex: 1,
-                                            height: 250
-                                        }}
-                                        resizeMode="cover"
-                                    />
-                                    <Fab
-                                        style={{
-                                            backgroundColor: "white"
-                                        }}
-                                    >
-                                        <Icon
-                                            style={{ color: "gray" }}
-                                            type="AntDesign"
-                                            name="heart"
-                                            position="bottomRight"
-                                        />
-                                    </Fab>
-                                </CardItem>
-                                <CardItem>
-                                    <Left>
-                                        <H1 style={styles.itemName}>
-                                            {item.productName}
-                                        </H1>
-                                    </Left>
-                                </CardItem>
-                                <CardItem>
-                                    <Left>
-                                        <H3 style={styles.itemPrice}>
-                                            {item.productPrice}
-                                        </H3>
-                                    </Left>
-                                </CardItem>
-                            </Card>
-                            <Card>
-                                <CardItem>
-                                    <Body>
-                                        <Text>
-                                            5 Courier Avaible. Shipping Charges
-                                            Start From Rp. 5000
-                                        </Text>
-                                    </Body>
-                                </CardItem>
-                                <CardItem>
-                                    <Body style={{ flexDirection: "row" }}>
-                                        <Icon type="AntDesign" name="home" />
-                                        <Text
-                                            style={{
-                                                paddingTop: 5,
-                                                paddingLeft: 5
-                                            }}
-                                        >
-                                            From Tanggerang City
-                                        </Text>
-                                    </Body>
-                                </CardItem>
-                                <CardItem>
-                                    <Body style={{ flexDirection: "row" }}>
-                                        <Icon
-                                            type="FontAwesome5"
-                                            name="truck"
-                                        />
-                                        <Text
-                                            style={{
-                                                paddingTop: 5,
-                                                paddingLeft: 5
-                                            }}
-                                        >
-                                            To Reg Sidoarjo
-                                        </Text>
-                                    </Body>
-                                </CardItem>
-                            </Card>
-                            <Card>
-                                <CardItem>
-                                    <Body>
-                                        <Text style={{ fontWeight: "bold" }}>
-                                            Product Information
-                                        </Text>
-                                    </Body>
-                                </CardItem>
-                                <CardItem>
-                                    <Left>
-                                        <Text style={{ marginLeft: 0 }}>
-                                            Min. Order
-                                        </Text>
-                                    </Left>
-                                    <Right>
-                                        <Text>1</Text>
-                                    </Right>
-                                </CardItem>
-                                <CardItem>
-                                    <Left>
-                                        <Text style={{ marginLeft: 0 }}>
-                                            Condition
-                                        </Text>
-                                    </Left>
-                                    <Right>
-                                        <Text>New</Text>
-                                    </Right>
-                                </CardItem>
-                                <CardItem>
-                                    <Body>
-                                        <Text style={{ fontWeight: "bold" }}>
-                                            Product Description
-                                        </Text>
-                                    </Body>
-                                </CardItem>
-                                <CardItem>
-                                    <Body>
-                                        <Text>
-                                            Lorem ipsum dolor sit amet,
-                                            consectetur adipiscing elit, sed do
-                                            eiusmod tempor incididunt ut labore
-                                            et dolore magna aliqua. Ut enim ad
-                                            minim veniam, quis nostrud
-                                            exercitation ullamco laboris nisi ut
-                                            aliquip ex ea commodo consequat.
-                                            Duis aute irure dolor in
-                                            reprehenderit in voluptate velit
-                                            esse cillum dolore eu fugiat nulla
-                                            pariatur. Excepteur sint occaecat
-                                            cupidatat non proident, sunt in
-                                            culpa qui officia deserunt mollit
-                                            anim id est laborum.
-                                        </Text>
-                                    </Body>
-                                </CardItem>
-                            </Card>
-                        </ScrollView>
+                        <Details
+                            productImage={item.productImage}
+                            productName={item.productName}
+                            productPrice={item.productPrice}
+                        />
                     )}
                 />
-                <Footer
-                    style={{
-                        backgroundColor: "white",
-                        paddingBottom: 8
-                    }}
-                >
+                <Footer style={styles.footerCustom}>
                     <Button style={styles.buttonCustom}>
                         <Text>Buy Now</Text>
                     </Button>
-                    <Button style={styles.buttonCustom}>
+                    <Button
+                        style={styles.buttonCustom}
+                        onPress={() =>
+                            this.props.navigation.navigate("AddChartScreen", {
+                                productName: getProductName,
+                                productImage: getProductImage,
+                                productPrice: getProductPrice
+                            })
+                        }
+                    >
                         <Text>Add To Cart</Text>
                     </Button>
                 </Footer>
@@ -198,14 +52,6 @@ class ProductList extends Component {
 }
 
 const styles = StyleSheet.create({
-    itemPrice: {
-        color: "#ff5722",
-        fontWeight: "bold"
-    },
-    itemName: {
-        color: "#494d52",
-        fontWeight: "bold"
-    },
     buttonCustom: {
         flex: 0.5,
         backgroundColor: "#ff5722",
@@ -216,9 +62,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     },
-    FabCustom: {
-        backgroundColor: "#fff"
+    footerCustom: {
+        backgroundColor: "white",
+        paddingBottom: 8
     }
 });
 
-export default ProductList;
+export default DetailProduct;
