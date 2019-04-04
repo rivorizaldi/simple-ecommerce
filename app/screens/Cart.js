@@ -1,21 +1,8 @@
-import {
-    Button,
-    Card,
-    CardItem,
-    Container,
-    Footer,
-    Icon,
-    Input,
-    Item,
-    Left,
-    Right,
-    Text,
-    Thumbnail,
-    Body
-} from "native-base";
-import EmptyCart from "../components/EmptyCart";
+import { Button, Container, Footer, Text } from "native-base";
 import React, { Component } from "react";
 import { FlatList, StyleSheet } from "react-native";
+import EmptyCart from "../components/EmptyCart";
+import ProductCart from "../components/ProductCart";
 
 class Cart extends Component {
     constructor() {
@@ -25,101 +12,162 @@ class Cart extends Component {
         };
     }
 
-    render() {
+    componentDidUpdate(prevProps, prevState) {
         const { navigation } = this.props;
-        this.focusListener = navigation.addListener("willFocus", () => {
-            const { navigation } = this.props;
-            const getProductImage = navigation.getParam("productImage", "");
-            const getProductName = navigation.getParam("productName", "");
-            const getProductPrice = navigation.getParam("productPrice", "");
+        const getProductImage = navigation.getParam("productImage", "");
+        const getProductName = navigation.getParam("productName", "");
+        const getProductPrice = navigation.getParam("productPrice", "");
+        const getProductQuantity = navigation.getParam("productQuantity", "");
 
-            const getProductQuantity = navigation.getParam(
-                "productQuantity",
-                ""
-            );
-
-            if (getProductName !== "") {
-                this.setState({
-                    cartList: [
-                        ...this.state.cartList,
-                        {
-                            productName: getProductName,
-                            productImage: getProductImage,
-                            productPrice: getProductPrice,
-                            quantity: getProductQuantity
-                        }
-                    ]
-                });
-            }
+        const filter = this.state.cartList.filter(x => {
+            return x.productName == getProductName;
         });
+        console.log(filter);
+        if (filter.length < 1) {
+            this.setState({
+                cartList: [
+                    ...this.state.cartList,
+                    {
+                        productName: getProductName,
+                        productImage: getProductImage,
+                        productPrice: getProductPrice,
+                        quantity: getProductQuantity,
+                        key: getProductName
+                    }
+                ]
+            });
+        } else if (filter) {
+            const index = this.state.cartList
+                .map(x => x.productName)
+                .indexOf(getProductName);
+            console.log(index);
+            this.setState({
+                cartList: [
+                    ...this.state.cartList.slice(0, index),
+                    Object.assign({}, this.state.cartList[index], {
+                        quantity:
+                            this.state.cartList[index].quantity +
+                            getProductQuantity
+                    }),
+                    ...this.state.cartList.slice(index + 1)
+                ]
+            });
+        }
+    }
+
+    componentDidMount() {
+        const { navigation } = this.props;
+        const getProductImage = navigation.getParam("productImage", "");
+        const getProductName = navigation.getParam("productName", "");
+        const getProductPrice = navigation.getParam("productPrice", "");
+        const getProductQuantity = navigation.getParam("productQuantity", "");
+        if (getProductName !== "") {
+            this.setState({
+                cartList: [
+                    ...this.state.cartList,
+                    {
+                        productName: getProductName,
+                        productImage: getProductImage,
+                        productPrice: getProductPrice,
+                        quantity: getProductQuantity,
+                        key: getProductName
+                    }
+                ]
+            });
+        }
+    }
+
+    increment = (item, index) => () => {
+        this.setState({
+            cartList: [
+                ...this.state.cartList.slice(0, index),
+                Object.assign({}, this.state.cartList[index], {
+                    quantity: item.quantity + 1
+                }),
+                ...this.state.cartList.slice(index + 1)
+            ]
+        });
+    };
+
+    decrement = (item, index) => () => {
+        if (this.state.cartList[index].quantity == 1) {
+            this.setState({
+                cartList: [
+                    ...this.state.cartList.slice(0, index),
+                    Object.assign({}, this.state.cartList[index], {
+                        quantity: 1
+                    }),
+                    ...this.state.cartList.slice(index + 1)
+                ]
+            });
+        } else {
+            this.setState({
+                cartList: [
+                    ...this.state.cartList.slice(0, index),
+                    Object.assign({}, this.state.cartList[index], {
+                        quantity: item.quantity - 1
+                    }),
+                    ...this.state.cartList.slice(index + 1)
+                ]
+            });
+        }
+    };
+
+    editingText = (item, index) => () => {
+        if (this.state.cartList[index].quantity < 1 || null) {
+            this.setState({
+                cartList: [
+                    ...this.state.cartList.slice(0, index),
+                    Object.assign({}, this.state.cartList[index], {
+                        quantity: 1
+                    }),
+                    ...this.state.cartList.slice(index + 1)
+                ]
+            });
+        }
+    };
+
+    changeText = (item, index) => text => {
+        if (this.state.cartList[index].quantity < 1) {
+            this.setState({
+                cartList: [
+                    ...this.state.cartList.slice(0, index),
+                    Object.assign({}, this.state.cartList[index], {
+                        quantity: parseInt(text)
+                    }),
+                    ...this.state.cartList.slice(index + 1)
+                ]
+            });
+        } else {
+            this.setState({
+                cartList: [
+                    ...this.state.cartList.slice(0, index),
+                    Object.assign({}, this.state.cartList[index], {
+                        quantity: parseInt(text.replace(/[^0-9]/g, ""))
+                    }),
+                    ...this.state.cartList.slice(index + 1)
+                ]
+            });
+        }
+    };
+
+    render() {
         if (this.state.cartList.length) {
             return (
                 <Container>
                     <FlatList
                         data={this.state.cartList}
-                        renderItem={({ item }) => (
-                            <Card>
-                                <CardItem>
-                                    <Left>
-                                        <Thumbnail
-                                            square
-                                            source={item.productImage}
-                                        />
-                                        <Body>
-                                            <Text>{item.productName}</Text>
-                                            <Text style={{ color: "#ff5722" }}>
-                                                Rp. {item.productPrice}
-                                            </Text>
-                                        </Body>
-                                    </Left>
-                                    <Right style={{ flexDirection: "row" }}>
-                                        <Button
-                                            small
-                                            rounded
-                                            bordered
-                                            success
-                                            onPress={() => {
-                                                item.quantity - 1;
-                                            }}
-                                        >
-                                            <Icon
-                                                type="AntDesign"
-                                                name="minus"
-                                            />
-                                        </Button>
-                                        <Item
-                                            style={{
-                                                width: 40,
-                                                height: 38,
-                                                margin: 3
-                                            }}
-                                        >
-                                            <Input
-                                                style={{
-                                                    width: 1,
-                                                    textAlign: "center"
-                                                }}
-                                                value={item.quantity.toString()}
-                                                keyboardType="numeric"
-                                            />
-                                        </Item>
-                                        <Button
-                                            small
-                                            rounded
-                                            bordered
-                                            success
-                                            onPress={() => {
-                                                item.quantity + 1;
-                                            }}
-                                        >
-                                            <Icon
-                                                type="AntDesign"
-                                                name="plus"
-                                            />
-                                        </Button>
-                                    </Right>
-                                </CardItem>
-                            </Card>
+                        renderItem={({ item, index }) => (
+                            <ProductCart
+                                productImage={item.productImage}
+                                productName={item.productName}
+                                productPrice={item.productPrice}
+                                quantity={item.quantity}
+                                incrementButton={this.increment(item, index)}
+                                decrementButton={this.decrement(item, index)}
+                                editingText={this.editingText(item, index)}
+                                textChange={this.changeText(item, index)}
+                            />
                         )}
                     />
                     <Footer style={styles.footerCustom}>
@@ -129,7 +177,14 @@ class Cart extends Component {
                             }}
                         >
                             <Text>Total Harga</Text>
-                            <Text style={{ color: "#ff5722" }}>Rp. {}</Text>
+                            <Text style={{ color: "#ff5722" }}>
+                                Rp.
+                                {this.state.cartList
+                                    .map(x => x.productPrice * x.quantity)
+                                    .reduce((acc, val) => acc + val)
+                                    .toString()
+                                    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
+                            </Text>
                         </Container>
                         <Button style={styles.buttonCustom}>
                             <Text>Checkout</Text>

@@ -25,7 +25,9 @@ class DetailProduct extends Component {
                         <Details
                             productImage={item.productImage}
                             productName={item.productName}
-                            productPrice={item.productPrice}
+                            productPrice={item.productPrice
+                                .toString()
+                                .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                         />
                     )}
                 />

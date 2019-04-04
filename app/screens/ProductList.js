@@ -77,7 +77,9 @@ class ProductList extends Component {
                     renderItem={({ item }) => (
                         <Product
                             productName={item.name}
-                            productPrice={item.price}
+                            productPrice={item.price
+                                .toString()
+                                .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                             productPhoto={item.path}
                             goToProductDetail={() =>
                                 this.props.navigation.navigate("Detailscreen", {

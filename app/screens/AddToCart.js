@@ -25,6 +25,42 @@ class AddToCart extends Component {
         };
     }
 
+    decrementQuantity = () => {
+        if (this.state.quantity < 2) {
+            this.setState({
+                quantity: 1
+            });
+        } else {
+            this.setState({
+                quantity: this.state.quantity - 1
+            });
+        }
+    };
+
+    increment = () => {
+        this.setState({
+            quantity: this.state.quantity + 1
+        });
+    };
+
+    editingText = () => {
+        if (this.state.quantity < 1 || null) {
+            this.setState({ quantity: 1 });
+        }
+    };
+
+    textChange = text => {
+        if (this.state.quantity < 1) {
+            this.setState({
+                quantity: parseInt(text)
+            });
+        } else {
+            this.setState({
+                quantity: text.replace(/[^0-9]/g, "")
+            });
+        }
+    };
+
     render() {
         const { navigation } = this.props;
         const getProductImage = navigation.getParam("productImage", "No Image");
@@ -40,7 +76,13 @@ class AddToCart extends Component {
                                 <Body>
                                     <Text>{getProductName}</Text>
                                     <Text style={{ color: "#ff5722" }}>
-                                        Rp. {getProductPrice}
+                                        Rp.
+                                        {getProductPrice
+                                            .toString()
+                                            .replace(
+                                                /(\d)(?=(\d{3})+(?!\d))/g,
+                                                "$1."
+                                            )}
                                     </Text>
                                 </Body>
                             </Left>
@@ -66,11 +108,7 @@ class AddToCart extends Component {
                                 rounded
                                 bordered
                                 success
-                                onPress={() => {
-                                    this.setState({
-                                        quantity: this.state.quantity - 1
-                                    });
-                                }}
+                                onPress={this.decrementQuantity}
                             >
                                 <Icon type="AntDesign" name="minus" />
                             </Button>
@@ -79,17 +117,15 @@ class AddToCart extends Component {
                                     style={{ width: 1, textAlign: "center" }}
                                     value={this.state.quantity.toString()}
                                     keyboardType="numeric"
+                                    onEndEditing={this.editingText}
+                                    onChangeText={this.textChange}
                                 />
                             </Item>
                             <Button
                                 rounded
                                 bordered
                                 success
-                                onPress={() => {
-                                    this.setState({
-                                        quantity: this.state.quantity + 1
-                                    });
-                                }}
+                                onPress={this.increment}
                             >
                                 <Icon type="AntDesign" name="plus" />
                             </Button>
@@ -106,7 +142,10 @@ class AddToCart extends Component {
                     >
                         <Text>Total Harga</Text>
                         <Text style={{ color: "#ff5722" }}>
-                            Rp. {this.state.quantity * getProductPrice}
+                            Rp.{" "}
+                            {(this.state.quantity * getProductPrice)
+                                .toString()
+                                .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                         </Text>
                     </Container>
                     <Button
