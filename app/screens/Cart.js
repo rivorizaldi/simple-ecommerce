@@ -5,77 +5,68 @@ import EmptyCart from "../components/EmptyCart";
 import ProductCart from "../components/ProductCart";
 
 class Cart extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             cartList: []
         };
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        const { navigation } = this.props;
-        const getProductImage = navigation.getParam("productImage", "");
-        const getProductName = navigation.getParam("productName", "");
-        const getProductPrice = navigation.getParam("productPrice", "");
-        const getProductQuantity = navigation.getParam("productQuantity", "");
-
-        const filter = this.state.cartList.filter(x => {
-            return x.productName == getProductName;
-        });
-        console.log(filter);
-        if (filter.length < 1) {
-            this.setState({
-                cartList: [
-                    ...this.state.cartList,
-                    {
-                        productName: getProductName,
-                        productImage: getProductImage,
-                        productPrice: getProductPrice,
-                        quantity: getProductQuantity,
-                        key: getProductName
-                    }
-                ]
-            });
-        } else if (filter) {
-            const index = this.state.cartList
-                .map(x => x.productName)
-                .indexOf(getProductName);
-            console.log(index);
-            this.setState({
-                cartList: [
-                    ...this.state.cartList.slice(0, index),
-                    Object.assign({}, this.state.cartList[index], {
-                        quantity:
-                            this.state.cartList[index].quantity +
-                            getProductQuantity
-                    }),
-                    ...this.state.cartList.slice(index + 1)
-                ]
-            });
-        }
-    }
-
     componentDidMount() {
-        const { navigation } = this.props;
-        const getProductImage = navigation.getParam("productImage", "");
-        const getProductName = navigation.getParam("productName", "");
-        const getProductPrice = navigation.getParam("productPrice", "");
-        const getProductQuantity = navigation.getParam("productQuantity", "");
-        if (getProductName !== "") {
-            this.setState({
-                cartList: [
-                    ...this.state.cartList,
-                    {
-                        productName: getProductName,
-                        productImage: getProductImage,
-                        productPrice: getProductPrice,
-                        quantity: getProductQuantity,
-                        key: getProductName
-                    }
-                ]
-            });
-        }
+        console.log("ini component did mount");
+        console.log(this.state.cartList);
+        this.addData();
     }
+
+    addData = () => {
+        const { navigation } = this.props;
+        const willFocus = navigation.addListener("willFocus", () => {
+            const { navigation } = this.props;
+            const getProductImage = navigation.getParam("productImage", "");
+            const getProductName = navigation.getParam("productName", "");
+            const getProductPrice = navigation.getParam("productPrice", "");
+            const getProductQuantity = navigation.getParam(
+                "productQuantity",
+                ""
+            );
+            if (getProductName !== "") {
+                const filter = this.state.cartList.filter(
+                    x => x.productName === getProductName
+                );
+
+                if (filter.length < 1) {
+                    this.setState({
+                        cartList: [
+                            ...this.state.cartList,
+                            {
+                                productName: getProductName,
+                                productImage: getProductImage,
+                                productPrice: getProductPrice,
+                                quantity: getProductQuantity,
+                                key: getProductName
+                            }
+                        ]
+                    });
+                } else {
+                    const index = this.state.cartList
+                        .map(x => x.productName)
+                        .indexOf(getProductName);
+
+                    this.setState({
+                        cartList: [
+                            ...this.state.cartList.slice(0, index),
+                            Object.assign({}, this.state.cartList[index], {
+                                quantity:
+                                    this.state.cartList[index].quantity +
+                                    getProductQuantity
+                            }),
+                            ...this.state.cartList.slice(index + 1)
+                        ]
+                    });
+                }
+            }
+        });
+    };
 
     increment = (item, index) => () => {
         this.setState({
@@ -153,6 +144,7 @@ class Cart extends Component {
 
     render() {
         if (this.state.cartList.length) {
+            console.log(this.state.cartList);
             return (
                 <Container>
                     <FlatList
@@ -167,6 +159,15 @@ class Cart extends Component {
                                 decrementButton={this.decrement(item, index)}
                                 editingText={this.editingText(item, index)}
                                 textChange={this.changeText(item, index)}
+                                deleteList={() => {
+                                    console.log(this.state.cartList);
+                                    const filter = this.state.cartList.filter(
+                                        x => x.productName !== item.productName
+                                    );
+                                    this.setState({
+                                        cartList: [...filter]
+                                    });
+                                }}
                             />
                         )}
                     />
@@ -186,7 +187,21 @@ class Cart extends Component {
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                             </Text>
                         </Container>
-                        <Button style={styles.buttonCustom}>
+                        <Button
+                            style={styles.buttonCustom}
+                            onPress={() => {
+                                this.props.navigation.navigate(
+                                    "CheckOutScreen",
+                                    {
+                                        totalPrice: this.state.cartList
+                                            .map(
+                                                x => x.productPrice * x.quantity
+                                            )
+                                            .reduce((acc, val) => acc + val)
+                                    }
+                                );
+                            }}
+                        >
                             <Text>Checkout</Text>
                         </Button>
                     </Footer>

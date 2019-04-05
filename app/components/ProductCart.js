@@ -55,9 +55,9 @@ class ProductCart extends Component {
                                 value={this.props.quantity
                                     .toString()
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
-								keyboardType="numeric"
-								onEndEditing={this.props.editingText}
-								onChangeText={this.props.textChange}
+                                keyboardType="numeric"
+                                onEndEditing={this.props.editingText}
+                                onChangeText={this.props.textChange}
                             />
                         </Item>
                         <Button
@@ -70,6 +70,17 @@ class ProductCart extends Component {
                             <Icon type="AntDesign" name="plus" />
                         </Button>
                     </Right>
+                </CardItem>
+                <CardItem footer bordered>
+                    <Button
+                        full
+                        danger
+                        bordered
+                        style={{ flex: 1 }}
+                        onPress={this.props.deleteList}
+                    >
+                        <Icon type="AntDesign" name="delete" />
+                    </Button>
                 </CardItem>
             </Card>
         );

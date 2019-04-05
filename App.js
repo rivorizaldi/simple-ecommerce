@@ -5,8 +5,10 @@ import {
     createBottomTabNavigator,
     createStackNavigator
 } from "react-navigation";
+import AddBuyNow from "./app/screens/AddBuyNow";
 import AddToCart from "./app/screens/AddToCart";
 import Cart from "./app/screens/Cart";
+import CheckOut from "./app/screens/CheckOut";
 import DetailProduct from "./app/screens/DetailProduct";
 import ProductList from "./app/screens/ProductList";
 
@@ -46,6 +48,7 @@ const AppTabNavigator = createBottomTabNavigator(
                 );
             }
         }),
+        resetOnBlur: true,
         tabBarOptions: {
             activeTintColor: "#03ac0e",
             inactiveTintColor: "#494d52"
@@ -83,6 +86,26 @@ const AppNavigator = createStackNavigator(
             screen: AddToCart,
             navigationOptions: () => ({
                 title: "Product Cart Detail",
+                headerStyle: {
+                    backgroundColor: "#fff"
+                },
+                headerTintColor: "#000"
+            })
+        },
+        AddBuyNowAScreen: {
+            screen: AddBuyNow,
+            navigationOptions: () => ({
+                title: "Product Buy Now Detail",
+                headerStyle: {
+                    backgroundColor: "#fff"
+                },
+                headerTintColor: "#000"
+            })
+        },
+        CheckOutScreen: {
+            screen: CheckOut,
+            navigationOptions: () => ({
+                title: "CheckOut",
                 headerStyle: {
                     backgroundColor: "#fff"
                 },

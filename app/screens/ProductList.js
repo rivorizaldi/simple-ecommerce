@@ -10,51 +10,49 @@ class ProductList extends Component {
             listProduct: [
                 {
                     key: "a",
-                    name: "Blue T-Shirt",
+                    name: "MEN HEAVY DUTY FLIGHT BOMBER JACKET",
                     price: 100000,
-                    path: require("../assets/img/blue-t-shirt.jpg"),
-                    description:
-                        "Kaos Polos Bahan Asli Cotton Combed 30s Bandung Ukuran S.M.L"
+                    path: require("../assets/img/B-15-MEN'S-HEAVY-DUTY-FLIGHT-BOMBER-JACKET.jpg")
                 },
                 {
                     key: "b",
-                    name: "Bright Purple T-Shirt",
+                    name: "TOP GUN BACKPACK WITH PATCHES",
                     price: 100000,
-                    path: require("../assets/img/bright-purple-t-shirt.jpg")
+                    path: require("../assets/img/TOP-GUN®-B-CKPACK-WITH-PATCHES.jpg")
                 },
                 {
                     key: "c",
-                    name: "Cobalt Blue T-Shirt",
+                    name: "TOP UN BOTTLE OPENER STEALTH BELT",
                     price: 100000,
-                    path: require("../assets/img/cobalt-blue-t-shirt.jpg")
+                    path: require("../assets/img/TOP-GUN®-BOTTLE-OPENER-STEALTH-BELT.jpg")
                 },
                 {
                     key: "d",
-                    name: "Green T-Shirt",
+                    name: "TOP GUN BEAST MODE CREWNECK",
                     price: 100000,
-                    path: require("../assets/img/green-t-shirt.jpg")
+                    path: require("../assets/img/TOP-GUN®-'BEAST-MODE'-CREWNECK.jpg")
                 },
                 {
                     key: "e",
-                    name: "Grey T-Shirt",
+                    name: "TOP GUN MEN’S SLIM FIT WOOL PEA COAT",
                     price: 100000,
-                    path: require("../assets/img/grey-t-shirt.jpg")
+                    path: require("../assets/img/TOP-GUN®-MEN’S-SLIM-FIT-WOOL-PEA-COAT.png")
                 },
                 {
                     key: "f",
-                    name: "Purple T-Shirt",
+                    name: "TOP GUN ORIGINAL WHITE JEANS",
                     price: 100000,
-                    path: require("../assets/img/purple-t-shirt.jpg")
+                    path: require("../assets/img/TOP-GUN®-ORIGINAL-WHITE-JEANS.jpg")
                 },
                 {
                     key: "g",
-                    name: "Red T-Shirt",
+                    name: "TOP GUN STEALTH LOGO CAP",
                     price: 100000,
-                    path: require("../assets/img/red-t-shirt.jpg")
+                    path: require("../assets/img/TOP-GUN®-STEALTH-LOGO-CAP.jpg")
                 },
                 {
                     key: "h",
-                    name: "Teal T-Shirt",
+                    name: "TEAl T-SHIRT",
                     price: 100000,
                     path: require("../assets/img/teal-t-shirt.jpg")
                 }
@@ -85,7 +83,8 @@ class ProductList extends Component {
                                 this.props.navigation.navigate("Detailscreen", {
                                     productName: item.name,
                                     productImage: item.path,
-                                    productPrice: item.price
+                                    productPrice: item.price,
+                                    key: item.key
                                 })
                             }
                         />

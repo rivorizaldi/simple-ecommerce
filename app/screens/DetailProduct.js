@@ -32,7 +32,16 @@ class DetailProduct extends Component {
                     )}
                 />
                 <Footer style={styles.footerCustom}>
-                    <Button style={styles.buttonCustom}>
+                    <Button
+                        style={styles.buttonCustom}
+                        onPress={() =>
+                            this.props.navigation.navigate("AddBuyNowAScreen", {
+                                productName: getProductName,
+                                productImage: getProductImage,
+                                productPrice: getProductPrice
+                            })
+                        }
+                    >
                         <Text>Buy Now</Text>
                     </Button>
                     <Button

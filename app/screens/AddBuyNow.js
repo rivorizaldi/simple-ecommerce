@@ -16,7 +16,7 @@ import {
 import React, { Component } from "react";
 import { StyleSheet } from "react-native";
 
-class AddToCart extends Component {
+class AddBuyNow extends Component {
     constructor() {
         super();
         this.state = {
@@ -25,11 +25,6 @@ class AddToCart extends Component {
         };
     }
 
-    componentDidMount() {
-        this.setState({
-            quantity: 1
-        });
-    }
     decrementQuantity = () => {
         if (this.state.quantity < 2) {
             this.setState({
@@ -147,7 +142,7 @@ class AddToCart extends Component {
                     >
                         <Text>Total Harga</Text>
                         <Text style={{ color: "#ff5722" }}>
-                            Rp.
+                            Rp.{" "}
                             {(this.state.quantity * getProductPrice)
                                 .toString()
                                 .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
@@ -156,15 +151,12 @@ class AddToCart extends Component {
                     <Button
                         style={styles.buttonCustom}
                         onPress={() =>
-                            this.props.navigation.navigate("CartScreen", {
-                                productName: getProductName,
-                                productImage: getProductImage,
-                                productPrice: getProductPrice,
-                                productQuantity: this.state.quantity
+                            this.props.navigation.navigate("CheckOutScreen", {
+                                productPrice: getProductPrice
                             })
                         }
                     >
-                        <Text style={{ textAlign: "center" }}>Add To Cart</Text>
+                        <Text style={{ textAlign: "center" }}>Buy Now</Text>
                     </Button>
                 </Footer>
             </Container>
@@ -191,4 +183,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AddToCart;
+export default AddBuyNow;
