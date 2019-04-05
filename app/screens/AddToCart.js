@@ -23,13 +23,9 @@ class AddToCart extends Component {
             quantity: 1,
             totalHarga: 0
         };
+        console.log("dari constructor", this.state.quantity);
     }
 
-    componentDidMount() {
-        this.setState({
-            quantity: 1
-        });
-    }
     decrementQuantity = () => {
         if (this.state.quantity < 2) {
             this.setState({
@@ -67,6 +63,7 @@ class AddToCart extends Component {
     };
 
     render() {
+        console.log("render", this.state.quantity);
         const { navigation } = this.props;
         const getProductImage = navigation.getParam("productImage", "No Image");
         const getProductName = navigation.getParam("productName", "No Product");

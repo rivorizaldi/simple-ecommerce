@@ -14,7 +14,6 @@ class Cart extends Component {
 
     componentDidMount() {
         console.log("ini component did mount");
-        console.log(this.state.cartList);
         this.addData();
     }
 
@@ -144,7 +143,6 @@ class Cart extends Component {
 
     render() {
         if (this.state.cartList.length) {
-            console.log(this.state.cartList);
             return (
                 <Container>
                     <FlatList
