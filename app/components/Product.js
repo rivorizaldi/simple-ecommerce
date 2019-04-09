@@ -1,33 +1,41 @@
 import { Card, CardItem, Left, Text } from "native-base";
 import React, { Component } from "react";
-import { Image, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Image, StyleSheet, TouchableOpacity } from "react-native";
 
 class Product extends Component {
     render() {
         return (
-            <Card style={styles.cardContainer}>
-                <TouchableOpacity onPress={this.props.goToProductDetail}>
+            <TouchableOpacity onPress={this.props.goToProductDetail}>
+                <Card style={styles.cardContainer}>
                     <CardItem cardBody>
                         <Image
-                            source={this.props.productPhoto}
-                            style={styles.itemImage}
+                            style={{ width: 165, height: 200 }}
+                            source={{
+                                uri: this.props.productPhoto
+                            }}
                         />
                     </CardItem>
-                    <CardItem style={styles.cardItemText}>
+                    <CardItem
+                        style={{
+                            height: 100,
+                            paddingTop: 0,
+                            paddingBottom: 0,
+                            alignItems: "flex-start"
+                        }}
+                    >
                         <Left>
                             <Text>{this.props.productName}</Text>
                         </Left>
                     </CardItem>
-                    <CardItem style={styles.cardItemText}>
+                    <CardItem style={{ padding: 0 }}>
                         <Left>
                             <Text style={styles.itemPrice}>
                                 Rp. {this.props.productPrice}
                             </Text>
                         </Left>
                     </CardItem>
-                </TouchableOpacity>
-            </Card>
+                </Card>
+            </TouchableOpacity>
         );
     }
 }
@@ -35,18 +43,14 @@ class Product extends Component {
 const styles = StyleSheet.create({
     cardContainer: {
         flex: 0.5,
-        marginRight: 8
+        marginRight: 8,
+        height: 350
     },
     cardItemText: {
         paddingTop: 8,
         paddingBottom: 8,
         paddingLeft: 8,
         paddingRight: 8
-    },
-    itemImage: {
-        height: 150,
-        width: null,
-        flex: 1
     },
     itemPrice: {
         color: "#ff5722"

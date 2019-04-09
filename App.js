@@ -11,6 +11,7 @@ import Cart from "./app/screens/Cart";
 import CheckOut from "./app/screens/CheckOut";
 import DetailProduct from "./app/screens/DetailProduct";
 import ProductList from "./app/screens/ProductList";
+import NavigationService from "./NavigationService";
 
 const AppTabNavigator = createBottomTabNavigator(
     {
@@ -122,6 +123,12 @@ const AppContainer = createAppContainer(AppNavigator);
 
 export default class App extends Component {
     render() {
-        return <AppContainer />;
+        return (
+            <AppContainer
+                ref={navigatorRef => {
+                    NavigationService.setTopLevelNavigator(navigatorRef);
+                }}
+            />
+        );
     }
 }

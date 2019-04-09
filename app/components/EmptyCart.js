@@ -13,7 +13,9 @@ class EmptyCart extends Component {
                     name="shoppingcart"
                     position="bottomRight"
                 />
-                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                <Text
+                    style={{ fontSize: 20, fontWeight: "bold", color: "gray" }}
+                >
                     Cart Still Empty
                 </Text>
             </Container>

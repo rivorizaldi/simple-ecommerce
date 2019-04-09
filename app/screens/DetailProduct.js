@@ -1,44 +1,82 @@
+import axios from "axios";
 import { Button, Container, Footer, Text } from "native-base";
 import React, { Component } from "react";
-import { FlatList, StyleSheet } from "react-native";
-import Details from "../components/Details";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import Detail from "../components/Detail";
 
 class DetailProduct extends Component {
-    render() {
-        const { navigation } = this.props;
-        const getProductImage = navigation.getParam("productImage", "No Image");
-        const getProductName = navigation.getParam("productName", "No Product");
-        const getProductPrice = navigation.getParam("productPrice", "No Price");
+    constructor() {
+        super();
+        this.state = {
+            productId: "",
+            productImage: "",
+            productName: "",
+            productPrice: 0,
+            isLoaded: false
+        };
+    }
 
+    componentDidMount() {
+        const { navigation } = this.props;
+        const baseUrl = "http://192.168.43.204:3333";
+        const getProductId = navigation.getParam("productId", "");
+
+        axios
+            .get(`${baseUrl}/v1/products/${getProductId}`)
+            .then(response => {
+                const detailProduct = response.data.data;
+
+                this.setState({
+                    productId: detailProduct.id,
+                    productImage: detailProduct.image,
+                    productName: detailProduct.name,
+                    productPrice: detailProduct.price,
+                    isLoaded: true
+                });
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    }
+
+    render() {
+        const { isLoaded } = this.state;
         return (
             <Container>
-                <FlatList
-                    data={[
-                        {
-                            key: "a",
-                            productImage: getProductImage,
-                            productName: getProductName,
-                            productPrice: getProductPrice
-                        }
-                    ]}
-                    renderItem={({ item }) => (
-                        <Details
-                            productImage={item.productImage}
-                            productName={item.productName}
-                            productPrice={item.productPrice
-                                .toString()
-                                .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
-                        />
-                    )}
-                />
+                {isLoaded ? (
+                    <FlatList
+                        data={[
+                            {
+                                key: this.state.productId,
+                                productImage: this.state.productImage,
+                                productName: this.state.productName,
+                                productPrice: this.state.productPrice
+                            }
+                        ]}
+                        renderItem={({ item }) => (
+                            <Detail
+                                productImage={`http://192.168.43.204:3333${
+                                    item.productImage
+                                }`}
+                                productName={item.productName}
+                                productPrice={item.productPrice
+                                    .toString()
+                                    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
+                            />
+                        )}
+                    />
+                ) : (
+                    <View style={{ flex: 1, justifyContent: "center" }}>
+                        <ActivityIndicator size="small" color="#ff5722" />
+                    </View>
+                )}
+
                 <Footer style={styles.footerCustom}>
                     <Button
                         style={styles.buttonCustom}
                         onPress={() =>
                             this.props.navigation.navigate("AddBuyNowAScreen", {
-                                productName: getProductName,
-                                productImage: getProductImage,
-                                productPrice: getProductPrice
+                                productId: this.state.productId
                             })
                         }
                     >
@@ -48,9 +86,7 @@ class DetailProduct extends Component {
                         style={styles.buttonCustom}
                         onPress={() =>
                             this.props.navigation.navigate("AddChartScreen", {
-                                productName: getProductName,
-                                productImage: getProductImage,
-                                productPrice: getProductPrice
+                                productId: this.state.productId
                             })
                         }
                     >

@@ -19,7 +19,12 @@ class ProductCart extends Component {
             <Card>
                 <CardItem>
                     <Left>
-                        <Thumbnail square source={this.props.productImage} />
+                        <Thumbnail
+                            square
+                            source={{
+                                uri: this.props.productImage
+                            }}
+                        />
                         <Body>
                             <Text>{this.props.productName}</Text>
                             <Text style={{ color: "#ff5722" }}>

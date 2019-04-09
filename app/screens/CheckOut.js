@@ -12,17 +12,22 @@ import {
     Text
 } from "native-base";
 import React, { Component } from "react";
-import { BackHandler, StyleSheet } from "react-native";
+import { BackHandler, StyleSheet, View } from "react-native";
+// import Modal from "react-native-modal";
 
 class CheckOut extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected2: undefined
+            selected2: undefined,
+            isModalVisible: false
         };
 
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
+
+    _toggleModal = () =>
+        this.setState({ isModalVisible: !this.state.isModalVisible });
 
     handleBackButtonClick() {
         this.props.navigation.navigate("CartScreen", {
@@ -105,6 +110,30 @@ class CheckOut extends Component {
                         </Item>
                     </Form>
                 </Content>
+                {/* <View>
+                    <Modal
+                        isVisible={this.state.isModalVisible}
+                        hasBackdrop={true}
+                        backdropColor={"#fff"}
+                        style={{
+                            height: 20,
+                            margin: 10,
+                            flex: 0,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "red"
+                        }}
+                        onBackButtonPress={this._toggleModal}
+                        onBackdropPress={this._toggleModal}
+                    >
+                        <View>
+                            <Text>I am Modal!</Text>
+                            <Button onPress={this._toggleModal}>
+                                <Text>Close</Text>
+                            </Button>
+                        </View>
+                    </Modal>
+                </View> */}
                 <Footer style={styles.footerCustom}>
                     <Container
                         style={{
@@ -122,8 +151,11 @@ class CheckOut extends Component {
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                         </Text>
                     </Container>
-                    <Button style={styles.buttonCustom}>
-                        <Text>Bayar</Text>
+                    <Button
+                        style={styles.buttonCustom}
+                        onPress={this._toggleModal}
+                    >
+                        <Text>Pay</Text>
                     </Button>
                 </Footer>
             </Container>

@@ -131,6 +131,14 @@ class AddBuyNow extends Component {
                             </Button>
                         </Container>
                     </Container>
+                    <Content>
+                        <Form>
+                            <Item stackedLabel>
+                                <Label>Note For Seller (Optional)</Label>
+                                <Input />
+                            </Item>
+                        </Form>
+                    </Content>
                 </Content>
                 <Footer style={styles.footerCustom}>
                     <Container

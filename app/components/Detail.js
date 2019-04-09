@@ -20,10 +20,9 @@ class Details extends Component {
                 <Card>
                     <CardItem cardBody>
                         <Image
-                            source={this.props.productImage}
-                            style={{
-                                flex: 1,
-                                height: 250
+                            style={{ flex: 1, width: 200, height: 400 }}
+                            source={{
+                                uri: this.props.productImage
                             }}
                             resizeMode="cover"
                         />

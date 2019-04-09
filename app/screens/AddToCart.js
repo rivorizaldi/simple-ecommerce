@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
     Body,
     Button,
@@ -6,24 +7,54 @@ import {
     Container,
     Content,
     Footer,
+    Form,
     Icon,
     Input,
     Item,
+    Label,
     Left,
     Text,
     Thumbnail
 } from "native-base";
 import React, { Component } from "react";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import NavigationService from "../../NavigationService";
 
 class AddToCart extends Component {
     constructor() {
         super();
         this.state = {
             quantity: 1,
-            totalHarga: 0
+            totalHarga: 0,
+            isLoaded: false,
+            productId: "",
+            productImage: "",
+            productName: "",
+            productPrice: 0
         };
-        console.log("dari constructor", this.state.quantity);
+    }
+
+    componentDidMount() {
+        const { navigation } = this.props;
+        const baseUrl = "http://192.168.43.204:3333";
+        const getProductId = navigation.getParam("productId", "");
+
+        axios
+            .get(`${baseUrl}/v1/products/${getProductId}`)
+            .then(response => {
+                const detailProduct = response.data.data;
+                console.log(detailProduct);
+                this.setState({
+                    productId: detailProduct.id,
+                    productImage: detailProduct.image,
+                    productName: detailProduct.name,
+                    productPrice: detailProduct.price,
+                    isLoaded: true
+                });
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
     }
 
     decrementQuantity = () => {
@@ -63,77 +94,101 @@ class AddToCart extends Component {
     };
 
     render() {
-        console.log("render", this.state.quantity);
-        const { navigation } = this.props;
-        const getProductImage = navigation.getParam("productImage", "No Image");
-        const getProductName = navigation.getParam("productName", "No Product");
-        const getProductPrice = navigation.getParam("productPrice", "No Price");
+        const { isLoaded } = this.state;
         return (
             <Container>
-                <Content scrollEnabled={false}>
-                    <Card>
-                        <CardItem>
-                            <Left>
-                                <Thumbnail square source={getProductImage} />
-                                <Body>
-                                    <Text>{getProductName}</Text>
-                                    <Text style={{ color: "#ff5722" }}>
-                                        Rp.
-                                        {getProductPrice
-                                            .toString()
-                                            .replace(
-                                                /(\d)(?=(\d{3})+(?!\d))/g,
-                                                "$1."
-                                            )}
-                                    </Text>
-                                </Body>
-                            </Left>
-                        </CardItem>
-                    </Card>
-                    <Container
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            marginRight: 17,
-                            marginLeft: 17,
-                            marginTop: 17
-                        }}
-                    >
-                        <Text>Jumlah</Text>
+                {isLoaded ? (
+                    <Content>
+                        <Card>
+                            <CardItem>
+                                <Left>
+                                    <Thumbnail
+                                        square
+                                        source={{
+                                            uri: `http://192.168.43.204:3333${
+                                                this.state.productImage
+                                            }`
+                                        }}
+                                    />
+                                    <Body>
+                                        <Text>{this.state.productName}</Text>
+                                        <Text style={{ color: "#ff5722" }}>
+                                            Rp.
+                                            {this.state.productPrice
+                                                .toString()
+                                                .replace(
+                                                    /(\d)(?=(\d{3})+(?!\d))/g,
+                                                    "$1."
+                                                )}
+                                        </Text>
+                                    </Body>
+                                </Left>
+                            </CardItem>
+                        </Card>
                         <Container
                             style={{
-                                justifyContent: "flex-end",
-                                flexDirection: "row"
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                marginRight: 17,
+                                marginLeft: 17,
+                                marginTop: 17,
+                                height: 50
                             }}
                         >
-                            <Button
-                                rounded
-                                bordered
-                                success
-                                onPress={this.decrementQuantity}
+                            <Text>Jumlah</Text>
+                            <Container
+                                style={{
+                                    justifyContent: "flex-end",
+                                    flexDirection: "row"
+                                }}
                             >
-                                <Icon type="AntDesign" name="minus" />
-                            </Button>
-                            <Item style={{ width: 40, height: 38, margin: 3 }}>
-                                <Input
-                                    style={{ width: 1, textAlign: "center" }}
-                                    value={this.state.quantity.toString()}
-                                    keyboardType="numeric"
-                                    onEndEditing={this.editingText}
-                                    onChangeText={this.textChange}
-                                />
-                            </Item>
-                            <Button
-                                rounded
-                                bordered
-                                success
-                                onPress={this.increment}
-                            >
-                                <Icon type="AntDesign" name="plus" />
-                            </Button>
+                                <Button
+                                    rounded
+                                    bordered
+                                    success
+                                    onPress={this.decrementQuantity}
+                                >
+                                    <Icon type="AntDesign" name="minus" />
+                                </Button>
+                                <Item
+                                    style={{ width: 40, height: 38, margin: 3 }}
+                                >
+                                    <Input
+                                        style={{
+                                            width: 1,
+                                            textAlign: "center"
+                                        }}
+                                        value={this.state.quantity.toString()}
+                                        keyboardType="numeric"
+                                        onEndEditing={this.editingText}
+                                        onChangeText={this.textChange}
+                                    />
+                                </Item>
+                                <Button
+                                    rounded
+                                    bordered
+                                    success
+                                    onPress={this.increment}
+                                >
+                                    <Icon type="AntDesign" name="plus" />
+                                </Button>
+                            </Container>
                         </Container>
-                    </Container>
-                </Content>
+                        <Content>
+                            <Form>
+                                <Item stackedLabel>
+                                    <Label>Note For Seller (Optional)</Label>
+                                    <Input />
+                                </Item>
+                            </Form>
+                        </Content>
+                    </Content>
+                ) : (
+                    <View style={{ flex: 1, justifyContent: "center" }}>
+                        <ActivityIndicator size="small" color="#ff5722" />
+                    </View>
+                )}
+
                 <Footer style={styles.footerCustom}>
                     <Container
                         style={{
@@ -145,21 +200,25 @@ class AddToCart extends Component {
                         <Text>Total Harga</Text>
                         <Text style={{ color: "#ff5722" }}>
                             Rp.
-                            {(this.state.quantity * getProductPrice)
+                            {(this.state.quantity * this.state.productPrice)
                                 .toString()
                                 .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                         </Text>
                     </Container>
                     <Button
                         style={styles.buttonCustom}
-                        onPress={() =>
-                            this.props.navigation.navigate("CartScreen", {
-                                productName: getProductName,
-                                productImage: getProductImage,
-                                productPrice: getProductPrice,
-                                productQuantity: this.state.quantity
-                            })
-                        }
+                        onPress={() => {
+                            const baseUrl = "http://192.168.43.204:3333";
+                            axios
+                                .post(`${baseUrl}/v1/orders`, {
+                                    product_id: this.state.productId,
+                                    qty: this.state.quantity,
+                                    price: this.state.productPrice
+                                })
+                                .then(res => {
+                                    NavigationService.navigate("CartScreen");
+                                });
+                        }}
                     >
                         <Text style={{ textAlign: "center" }}>Add To Cart</Text>
                     </Button>
