@@ -20,7 +20,7 @@ class Details extends Component {
                 <Card>
                     <CardItem cardBody>
                         <Image
-                            style={{ flex: 1, width: 200, height: 400 }}
+                            style={styles.imageCustom}
                             source={{
                                 uri: this.props.productImage
                             }}
@@ -61,7 +61,7 @@ class Details extends Component {
                     </CardItem>
                     <CardItem>
                         <Body style={{ flexDirection: "row" }}>
-                            <Icon type="AntDesign" name="home" />
+                            <Icon type="FontAwesome5" name="home" />
                             <Text
                                 style={{
                                     paddingTop: 5,
@@ -119,18 +119,7 @@ class Details extends Component {
                     </CardItem>
                     <CardItem>
                         <Body>
-                            <Text>
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit, sed do eiusmod tempor
-                                incididunt ut labore et dolore magna aliqua. Ut
-                                enim ad minim veniam, quis nostrud exercitation
-                                ullamco laboris nisi ut aliquip ex ea commodo
-                                consequat. Duis aute irure dolor in
-                                reprehenderit in voluptate velit esse cillum
-                                dolore eu fugiat nulla pariatur. Excepteur sint
-                                occaecat cupidatat non proident, sunt in culpa
-                                qui officia deserunt mollit anim id est laborum.
-                            </Text>
+                            <Text>{this.props.productDescription}</Text>
                         </Body>
                     </CardItem>
                 </Card>
@@ -140,6 +129,11 @@ class Details extends Component {
 }
 
 const styles = StyleSheet.create({
+    imageCustom: {
+        flex: 1,
+        width: 200,
+        height: 400
+    },
     itemPrice: {
         color: "#ff5722",
         fontWeight: "bold"

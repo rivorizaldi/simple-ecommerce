@@ -6,9 +6,11 @@ import {
     Container,
     Content,
     Footer,
+    Form,
     Icon,
     Input,
     Item,
+    Label,
     Left,
     Text,
     Thumbnail

@@ -9,25 +9,18 @@ class Product extends Component {
                 <Card style={styles.cardContainer}>
                     <CardItem cardBody>
                         <Image
-                            style={{ width: 165, height: 200 }}
+                            style={styles.imageCustom}
                             source={{
                                 uri: this.props.productPhoto
                             }}
                         />
                     </CardItem>
-                    <CardItem
-                        style={{
-                            height: 100,
-                            paddingTop: 0,
-                            paddingBottom: 0,
-                            alignItems: "flex-start"
-                        }}
-                    >
+                    <CardItem style={styles.cardItemText}>
                         <Left>
                             <Text>{this.props.productName}</Text>
                         </Left>
                     </CardItem>
-                    <CardItem style={{ padding: 0 }}>
+                    <CardItem style={styles.cardItemPrice}>
                         <Left>
                             <Text style={styles.itemPrice}>
                                 Rp. {this.props.productPrice}
@@ -47,10 +40,17 @@ const styles = StyleSheet.create({
         height: 350
     },
     cardItemText: {
-        paddingTop: 8,
-        paddingBottom: 8,
-        paddingLeft: 8,
-        paddingRight: 8
+        height: 100,
+        paddingTop: 0,
+        paddingBottom: 0,
+        alignItems: "flex-start"
+    },
+    cardItemPrice: {
+        padding: 0
+    },
+    imageCustom: {
+        width: 165,
+        height: 200
     },
     itemPrice: {
         color: "#ff5722"

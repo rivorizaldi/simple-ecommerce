@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Container } from "native-base";
 import React, { Component } from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import Product from "../components/Product";
 
 class ProductList extends Component {
@@ -21,8 +21,8 @@ class ProductList extends Component {
             .then(response => {
                 const listProduct = response.data.data;
                 this.setState({
-					listProduct,
-					isLoaded: true
+                    listProduct,
+                    isLoaded: true
                 });
             })
             .catch(function(error) {
@@ -32,18 +32,40 @@ class ProductList extends Component {
 
     render() {
         const { isLoaded } = this.state;
+
+        // const { navigation } = this.props;
+        // navigation.addListener("willBlur", () => {
+        //     this.setState({
+        //         isLoaded: false
+        //     });
+        // });
+
+        // navigation.addListener("willFocus", () => {
+        //     const baseUrl = "http://192.168.43.204:3333";
+
+        //     axios
+        //         .get(baseUrl + "/v1/products")
+        //         .then(response => {
+        //             const listProduct = response.data.data;
+        //             this.setState({
+        //                 listProduct,
+        //                 isLoaded: true
+        //             });
+        //         })
+        //         .catch(function(error) {
+        //             console.log(error);
+        //         });
+        // });
         return (
             <Container>
                 {isLoaded ? (
                     <FlatList
-                        keyExtractor={(item, index) => {
-                            index;
-                        }}
                         columnWrapperStyle={{
                             marginTop: 8,
                             marginLeft: 8,
                             alignItems: "space-between"
                         }}
+                        keyExtractor={item => item.id.toString()}
                         horizontal={false}
                         numColumns={2}
                         data={this.state.listProduct}
@@ -68,7 +90,7 @@ class ProductList extends Component {
                         )}
                     />
                 ) : (
-                    <View style={{ flex: 1, justifyContent: "center" }}>
+                    <View style={style.spinnerCustom}>
                         <ActivityIndicator size="small" color="#ff5722" />
                     </View>
                 )}
@@ -76,5 +98,12 @@ class ProductList extends Component {
         );
     }
 }
+
+const style = StyleSheet.create({
+    spinnerCustom: {
+        flex: 1,
+        justifyContent: "center"
+    }
+});
 
 export default ProductList;

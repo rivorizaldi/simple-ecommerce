@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import {
     createAppContainer,
     createBottomTabNavigator,
@@ -32,12 +32,12 @@ const AppTabNavigator = createBottomTabNavigator(
         defaultNavigationOptions: ({ navigation }) => ({
             tabBarIcon: ({ tintColor }) => {
                 const { routeName } = navigation.state;
-                let IconComponent = AntDesign;
+                let IconComponent = FontAwesome5;
                 let iconName;
                 if (routeName === "Homescreen") {
                     iconName = "home";
                 } else if (routeName === "CartScreen") {
-                    iconName = `shoppingcart`;
+                    iconName = `shopping-cart`;
                 }
 
                 return (
@@ -49,11 +49,12 @@ const AppTabNavigator = createBottomTabNavigator(
                 );
             }
         }),
-        resetOnBlur: true,
+        // resetOnBlur: true,
         tabBarOptions: {
             activeTintColor: "#03ac0e",
             inactiveTintColor: "#494d52"
-        }
+        },
+        // lazy: false
     }
 );
 

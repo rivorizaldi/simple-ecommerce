@@ -1,8 +1,9 @@
 import axios from "axios";
-import { Button, Container, Footer, Text } from "native-base";
+import { Container } from "native-base";
 import React, { Component } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import { ActivityIndicator, FlatList, View } from "react-native";
 import Detail from "../components/Detail";
+import FooterDetail from "../components/FooterDetail";
 
 class DetailProduct extends Component {
     constructor() {
@@ -71,48 +72,21 @@ class DetailProduct extends Component {
                     </View>
                 )}
 
-                <Footer style={styles.footerCustom}>
-                    <Button
-                        style={styles.buttonCustom}
-                        onPress={() =>
-                            this.props.navigation.navigate("AddBuyNowAScreen", {
-                                productId: this.state.productId
-                            })
-                        }
-                    >
-                        <Text>Buy Now</Text>
-                    </Button>
-                    <Button
-                        style={styles.buttonCustom}
-                        onPress={() =>
-                            this.props.navigation.navigate("AddChartScreen", {
-                                productId: this.state.productId
-                            })
-                        }
-                    >
-                        <Text>Add To Cart</Text>
-                    </Button>
-                </Footer>
+                <FooterDetail
+                    buyNoW={() =>
+                        this.props.navigation.navigate("AddBuyNowAScreen", {
+                            productId: this.state.productId
+                        })
+                    }
+                    addCart={() =>
+                        this.props.navigation.navigate("AddChartScreen", {
+                            productId: this.state.productId
+                        })
+                    }
+                />
             </Container>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    buttonCustom: {
-        flex: 0.5,
-        backgroundColor: "#ff5722",
-        color: "#ffffff",
-        marginLeft: 6,
-        marginRight: 6,
-        marginTop: 6,
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    footerCustom: {
-        backgroundColor: "white",
-        paddingBottom: 8
-    }
-});
 
 export default DetailProduct;

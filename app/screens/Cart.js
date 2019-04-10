@@ -14,79 +14,12 @@ class Cart extends Component {
         };
     }
 
-    componentDidMount() {
-        const baseUrl = "http://192.168.43.204:3333";
-
-        axios
-            .get(baseUrl + "/v1/orders")
-            .then(response => {
-                const cartList = response.data.data;
-                this.setState({
-                    cartList,
-                    isLoaded: true
-                });
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-    }
-
-    // addData = () => {
-    //     const { navigation } = this.props;
-    //     const willFocus = navigation.addListener("willFocus", () => {
-    //         const { navigation } = this.props;
-    //         const getProductImage = navigation.getParam("productImage", "");
-    //         const getProductName = navigation.getParam("productName", "");
-    //         const getProductPrice = navigation.getParam("productPrice", "");
-    //         const getProductQuantity = navigation.getParam(
-    //             "productQuantity",
-    //             ""
-    //         );
-    //         if (getProductName !== "") {
-    //             const filter = this.state.cartList.filter(
-    //                 x => x.productName === getProductName
-    //             );
-
-    //             if (filter.length < 1) {
-    //                 this.setState({
-    //                     cartList: [
-    //                         ...this.state.cartList,
-    //                         {
-    //                             productName: getProductName,
-    //                             productImage: getProductImage,
-    //                             productPrice: getProductPrice,
-    //                             quantity: getProductQuantity,
-    //                             key: getProductName
-    //                         }
-    //                     ]
-    //                 });
-    //             } else {
-    //                 const index = this.state.cartList
-    //                     .map(x => x.productName)
-    //                     .indexOf(getProductName);
-
-    //                 this.setState({
-    //                     cartList: [
-    //                         ...this.state.cartList.slice(0, index),
-    //                         Object.assign({}, this.state.cartList[index], {
-    //                             quantity:
-    //                                 this.state.cartList[index].quantity +
-    //                                 getProductQuantity
-    //                         }),
-    //                         ...this.state.cartList.slice(index + 1)
-    //                     ]
-    //                 });
-    //             }
-    //         }
-    //     });
-    // };
-
     increment = (item, index) => () => {
         this.setState({
             cartList: [
                 ...this.state.cartList.slice(0, index),
                 Object.assign({}, this.state.cartList[index], {
-                    quantity: item.quantity + 1
+                    qty: item.qty + 1
                 }),
                 ...this.state.cartList.slice(index + 1)
             ]
@@ -94,12 +27,12 @@ class Cart extends Component {
     };
 
     decrement = (item, index) => () => {
-        if (this.state.cartList[index].quantity == 1) {
+        if (this.state.cartList[index].qty == 1) {
             this.setState({
                 cartList: [
                     ...this.state.cartList.slice(0, index),
                     Object.assign({}, this.state.cartList[index], {
-                        quantity: 1
+                        qty: 1
                     }),
                     ...this.state.cartList.slice(index + 1)
                 ]
@@ -109,7 +42,7 @@ class Cart extends Component {
                 cartList: [
                     ...this.state.cartList.slice(0, index),
                     Object.assign({}, this.state.cartList[index], {
-                        quantity: item.quantity - 1
+                        qty: item.qty - 1
                     }),
                     ...this.state.cartList.slice(index + 1)
                 ]
@@ -118,12 +51,12 @@ class Cart extends Component {
     };
 
     editingText = (item, index) => () => {
-        if (this.state.cartList[index].quantity < 1 || null) {
+        if (this.state.cartList[index].qty < 1 || null) {
             this.setState({
                 cartList: [
                     ...this.state.cartList.slice(0, index),
                     Object.assign({}, this.state.cartList[index], {
-                        quantity: 1
+                        qty: 1
                     }),
                     ...this.state.cartList.slice(index + 1)
                 ]
@@ -132,12 +65,12 @@ class Cart extends Component {
     };
 
     changeText = (item, index) => text => {
-        if (this.state.cartList[index].quantity < 1) {
+        if (this.state.cartList[index].qty < 1) {
             this.setState({
                 cartList: [
                     ...this.state.cartList.slice(0, index),
                     Object.assign({}, this.state.cartList[index], {
-                        quantity: parseInt(text)
+                        qty: parseInt(text)
                     }),
                     ...this.state.cartList.slice(index + 1)
                 ]
@@ -147,7 +80,7 @@ class Cart extends Component {
                 cartList: [
                     ...this.state.cartList.slice(0, index),
                     Object.assign({}, this.state.cartList[index], {
-                        quantity: parseInt(text.replace(/[^0-9]/g, ""))
+                        qty: parseInt(text.replace(/[^0-9]/g, ""))
                     }),
                     ...this.state.cartList.slice(index + 1)
                 ]
@@ -157,85 +90,136 @@ class Cart extends Component {
 
     render() {
         const { isLoaded } = this.state;
-        if (this.state.cartList.length) {
+
+        const { navigation } = this.props;
+        navigation.addListener("willBlur", () => {
+            this.setState({
+                isLoaded: false
+            });
+        });
+
+        navigation.addListener("willFocus", () => {
+            const baseUrl = "http://192.168.43.204:3333";
+
+            axios
+                .get(baseUrl + "/v1/orders")
+                .then(response => {
+                    const cartList = response.data.data;
+                    this.setState({
+                        cartList,
+                        isLoaded: true
+                    });
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        });
+
+        if (isLoaded) {
             return (
                 <Container>
-                    {isLoaded ? (
-                        <FlatList
-                            data={this.state.cartList}
-                            renderItem={({ item, index }) => (
-                                <ProductCart
-                                    productImage={`http://192.168.43.204:3333${
-                                        item.image
-                                    }`}
-                                    productName={item.name}
-                                    productPrice={item.price}
-                                    quantity={item.qty}
-                                    incrementButton={this.increment(
-                                        item,
-                                        index
-                                    )}
-                                    decrementButton={this.decrement(
-                                        item,
-                                        index
-                                    )}
-                                    editingText={this.editingText(item, index)}
-                                    textChange={this.changeText(item, index)}
-                                    deleteList={() => {
-                                        console.log(this.state.cartList);
-                                        const filter = this.state.cartList.filter(
-                                            x =>
-                                                x.productName !==
-                                                item.productName
-                                        );
-                                        this.setState({
-                                            cartList: [...filter]
-                                        });
+                    {this.state.cartList.length ? (
+                        <Container>
+                            <FlatList
+                                keyExtractor={item => item.id.toString()}
+                                data={this.state.cartList}
+                                renderItem={({ item, index }) => (
+                                    <ProductCart
+                                        productImage={`http://192.168.43.204:3333${
+                                            item.image
+                                        }`}
+                                        productName={item.name}
+                                        productPrice={item.price}
+                                        quantity={item.qty}
+                                        incrementButton={this.increment(
+                                            item,
+                                            index
+                                        )}
+                                        decrementButton={this.decrement(
+                                            item,
+                                            index
+                                        )}
+                                        editingText={this.editingText(
+                                            item,
+                                            index
+                                        )}
+                                        textChange={this.changeText(
+                                            item,
+                                            index
+                                        )}
+                                        deleteList={() => {
+                                            const baseUrl =
+                                                "http://192.168.43.204:3333";
+                                            console.log(item.id);
+                                            axios
+                                                .delete(
+                                                    baseUrl +
+                                                        "/v1/orders/" +
+                                                        item.id
+                                                )
+                                                .then(response => {})
+                                                .catch(function(error) {
+                                                    console.log(error);
+                                                });
+                                            const filter = this.state.cartList.filter(
+                                                x => x.id !== item.id
+                                            );
+                                            this.setState({
+                                                cartList: [...filter]
+                                            });
+                                        }}
+                                    />
+                                )}
+                            />
+                            <Footer style={styles.footerCustom}>
+                                <Container
+                                    style={{
+                                        flex: 0.3
                                     }}
-                                />
-                            )}
-                        />
-                    ) : (
-                        <View style={{ flex: 1, justifyContent: "center" }}>
-                            <ActivityIndicator size="small" color="#ff5722" />
-                        </View>
-                    )}
-                    <Footer style={styles.footerCustom}>
-                        <Container
-                            style={{
-                                flex: 0.3
-                            }}
-                        >
-                            <Text>Total Harga</Text>
-                            <Text style={{ color: "#ff5722" }}>
-                                Rp.
-                                {this.state.cartList
-                                    .map(x => x.price * x.qty)
-                                    .reduce((acc, val) => acc + val)
-                                    .toString()
-                                    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
-                            </Text>
-                        </Container>
-                        <Button
-                            style={styles.buttonCustom}
-                            onPress={() => {
-                                this.props.navigation.navigate(
-                                    "CheckOutScreen",
-                                    {
-                                        totalPrice: this.state.cartList
+                                >
+                                    <Text>Total Harga</Text>
+                                    <Text style={{ color: "#ff5722" }}>
+                                        Rp.
+                                        {this.state.cartList
                                             .map(x => x.price * x.qty)
                                             .reduce((acc, val) => acc + val)
-                                    }
-                                );
-                            }}
-                        >
-                            <Text>Checkout</Text>
-                        </Button>
-                    </Footer>
+                                            .toString()
+                                            .replace(
+                                                /(\d)(?=(\d{3})+(?!\d))/g,
+                                                "$1."
+                                            )}
+                                    </Text>
+                                </Container>
+                                <Button
+                                    style={styles.buttonCustom}
+                                    onPress={() => {
+                                        this.props.navigation.navigate(
+                                            "CheckOutScreen",
+                                            {
+                                                totalPrice: this.state.cartList
+                                                    .map(x => x.price * x.qty)
+                                                    .reduce(
+                                                        (acc, val) => acc + val
+                                                    )
+                                            }
+                                        );
+                                    }}
+                                >
+                                    <Text>Checkout</Text>
+                                </Button>
+                            </Footer>
+                        </Container>
+                    ) : (
+                        <EmptyCart />
+                    )}
                 </Container>
             );
         } else {
-            return <EmptyCart />;
+            return (
+                <View style={{ flex: 1, justifyContent: "center" }}>
+                    <ActivityIndicator size="small" color="#ff5722" />
+                </View>
+            );
         }
     }
 }
