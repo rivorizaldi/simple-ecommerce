@@ -49,11 +49,11 @@ const AppTabNavigator = createBottomTabNavigator(
                 );
             }
         }),
-        // resetOnBlur: true,
+        resetOnBlur: true,
         tabBarOptions: {
             activeTintColor: "#03ac0e",
             inactiveTintColor: "#494d52"
-        },
+        }
         // lazy: false
     }
 );

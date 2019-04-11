@@ -36,7 +36,7 @@ class AddToCart extends Component {
 
     componentDidMount() {
         const { navigation } = this.props;
-        const baseUrl = "http://192.168.43.204:3333";
+        const baseUrl = "http://192.168.0.9:3333";
         const getProductId = navigation.getParam("productId", "");
 
         axios
@@ -105,7 +105,7 @@ class AddToCart extends Component {
                                     <Thumbnail
                                         square
                                         source={{
-                                            uri: `http://192.168.43.204:3333${
+                                            uri: `http://192.168.0.9:3333${
                                                 this.state.productImage
                                             }`
                                         }}
@@ -208,7 +208,7 @@ class AddToCart extends Component {
                     <Button
                         style={styles.buttonCustom}
                         onPress={() => {
-                            const baseUrl = "http://192.168.43.204:3333";
+                            const baseUrl = "http://192.168.0.9:3333";
                             axios
                                 .post(`${baseUrl}/v1/orders`, {
                                     product_id: this.state.productId,

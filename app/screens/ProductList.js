@@ -14,7 +14,7 @@ class ProductList extends Component {
     }
 
     componentDidMount() {
-        const baseUrl = "http://192.168.43.204:3333";
+        const baseUrl = "http://192.168.0.9:3333";
 
         axios
             .get(baseUrl + "/v1/products")
@@ -33,29 +33,6 @@ class ProductList extends Component {
     render() {
         const { isLoaded } = this.state;
 
-        // const { navigation } = this.props;
-        // navigation.addListener("willBlur", () => {
-        //     this.setState({
-        //         isLoaded: false
-        //     });
-        // });
-
-        // navigation.addListener("willFocus", () => {
-        //     const baseUrl = "http://192.168.43.204:3333";
-
-        //     axios
-        //         .get(baseUrl + "/v1/products")
-        //         .then(response => {
-        //             const listProduct = response.data.data;
-        //             this.setState({
-        //                 listProduct,
-        //                 isLoaded: true
-        //             });
-        //         })
-        //         .catch(function(error) {
-        //             console.log(error);
-        //         });
-        // });
         return (
             <Container>
                 {isLoaded ? (
@@ -75,7 +52,7 @@ class ProductList extends Component {
                                 productPrice={item.price
                                     .toString()
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
-                                productPhoto={`http://192.168.43.204:3333${
+                                productPhoto={`http://192.168.0.9:3333${
                                     item.image
                                 }`}
                                 goToProductDetail={() =>

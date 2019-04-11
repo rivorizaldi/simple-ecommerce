@@ -14,6 +14,48 @@ class Cart extends Component {
         };
     }
 
+    componentDidMount() {
+        const { navigation } = this.props;
+        navigation.addListener("didBlur", () => {
+            this.setState({
+                isLoaded: false
+            });
+        });
+
+        navigation.addListener("didFocus", () => {
+            const baseUrl = "http://192.168.0.9:3333";
+
+            axios
+                .get(baseUrl + "/v1/orders")
+                .then(response => {
+                    const cartList = response.data.data;
+                    this.setState({
+                        cartList,
+                        isLoaded: true
+                    });
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        });
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const baseUrl = "http://192.168.0.9:3333";
+        if (this.state.cartList !== prevState.cartList) {
+            this.state.cartList.forEach(obj => {
+                axios
+                    .patch(baseUrl + "/v1/orders/" + obj.id, { qty: obj.qty })
+                    .then(response => {
+                        console.log("sucess");
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            });
+        }
+    }
+
     increment = (item, index) => () => {
         this.setState({
             cartList: [
@@ -48,6 +90,23 @@ class Cart extends Component {
                 ]
             });
         }
+    };
+
+    delete = (item, index) => () => {
+        const baseUrl = "http://192.168.0.9:3333";
+        axios
+            .delete(baseUrl + "/v1/orders/" + item.id)
+            .then(() => {
+                const filter = this.state.cartList.filter(
+                    x => x.id !== item.id
+                );
+                this.setState({
+                    cartList: [...filter]
+                });
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
     };
 
     editingText = (item, index) => () => {
@@ -90,31 +149,6 @@ class Cart extends Component {
 
     render() {
         const { isLoaded } = this.state;
-
-        const { navigation } = this.props;
-        navigation.addListener("willBlur", () => {
-            this.setState({
-                isLoaded: false
-            });
-        });
-
-        navigation.addListener("willFocus", () => {
-            const baseUrl = "http://192.168.43.204:3333";
-
-            axios
-                .get(baseUrl + "/v1/orders")
-                .then(response => {
-                    const cartList = response.data.data;
-                    this.setState({
-                        cartList,
-                        isLoaded: true
-                    });
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        });
-
         if (isLoaded) {
             return (
                 <Container>
@@ -125,11 +159,11 @@ class Cart extends Component {
                                 data={this.state.cartList}
                                 renderItem={({ item, index }) => (
                                     <ProductCart
-                                        productImage={`http://192.168.43.204:3333${
-                                            item.image
+                                        productImage={`http://192.168.0.9:3333${
+                                            item.product.image
                                         }`}
-                                        productName={item.name}
-                                        productPrice={item.price}
+                                        productName={item.product.name}
+                                        productPrice={item.product.price}
                                         quantity={item.qty}
                                         incrementButton={this.increment(
                                             item,
@@ -147,27 +181,7 @@ class Cart extends Component {
                                             item,
                                             index
                                         )}
-                                        deleteList={() => {
-                                            const baseUrl =
-                                                "http://192.168.43.204:3333";
-                                            console.log(item.id);
-                                            axios
-                                                .delete(
-                                                    baseUrl +
-                                                        "/v1/orders/" +
-                                                        item.id
-                                                )
-                                                .then(response => {})
-                                                .catch(function(error) {
-                                                    console.log(error);
-                                                });
-                                            const filter = this.state.cartList.filter(
-                                                x => x.id !== item.id
-                                            );
-                                            this.setState({
-                                                cartList: [...filter]
-                                            });
-                                        }}
+                                        deleteList={this.delete(item, index)}
                                     />
                                 )}
                             />

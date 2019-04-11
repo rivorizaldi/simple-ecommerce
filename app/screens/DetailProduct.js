@@ -19,7 +19,7 @@ class DetailProduct extends Component {
 
     componentDidMount() {
         const { navigation } = this.props;
-        const baseUrl = "http://192.168.43.204:3333";
+        const baseUrl = "http://192.168.0.9:3333";
         const getProductId = navigation.getParam("productId", "");
 
         axios
@@ -48,7 +48,7 @@ class DetailProduct extends Component {
                     <FlatList
                         data={[
                             {
-                                key: this.state.productId,
+                                key: this.state.productId.toString(),
                                 productImage: this.state.productImage,
                                 productName: this.state.productName,
                                 productPrice: this.state.productPrice
@@ -56,7 +56,7 @@ class DetailProduct extends Component {
                         ]}
                         renderItem={({ item }) => (
                             <Detail
-                                productImage={`http://192.168.43.204:3333${
+                                productImage={`http://192.168.0.9:3333${
                                     item.productImage
                                 }`}
                                 productName={item.productName}
