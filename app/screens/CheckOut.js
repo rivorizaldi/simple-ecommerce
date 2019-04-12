@@ -12,7 +12,7 @@ import {
     Text
 } from "native-base";
 import React, { Component } from "react";
-import { BackHandler, StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 // import Modal from "react-native-modal";
 
 class CheckOut extends Component {
@@ -20,21 +20,22 @@ class CheckOut extends Component {
         super(props);
         this.state = {
             selected2: undefined,
-            isModalVisible: false
+            isModalVisible: false,
+            showToast: false
         };
 
-        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
+        //this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
 
     _toggleModal = () =>
         this.setState({ isModalVisible: !this.state.isModalVisible });
 
-    handleBackButtonClick() {
-        this.props.navigation.navigate("CartScreen", {
-            productName: ""
-        });
-        return true;
-    }
+    // handleBackButtonClick() {
+    //     this.props.navigation.navigate("CartScreen", {
+    //         productName: ""
+    //     });
+    //     return true;
+    // }
     onValueChange2(value) {
         this.setState({
             selected2: value
@@ -42,10 +43,10 @@ class CheckOut extends Component {
     }
 
     componentDidMount() {
-        BackHandler.addEventListener(
-            "hardwareBackPress",
-            this.handleBackButtonClick
-        );
+        // BackHandler.addEventListener(
+        //     "hardwareBackPress",
+        //     this.handleBackButtonClick
+        // );
     }
 
     render() {
@@ -151,10 +152,7 @@ class CheckOut extends Component {
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                         </Text>
                     </Container>
-                    <Button
-                        style={styles.buttonCustom}
-                        onPress={this._toggleModal}
-                    >
+                    <Button style={styles.buttonCustom} onPress={() => {}}>
                         <Text>Pay</Text>
                     </Button>
                 </Footer>

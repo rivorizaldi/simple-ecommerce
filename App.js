@@ -1,3 +1,4 @@
+import { Root } from "native-base";
 import React, { Component } from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import {
@@ -125,11 +126,13 @@ const AppContainer = createAppContainer(AppNavigator);
 export default class App extends Component {
     render() {
         return (
-            <AppContainer
-                ref={navigatorRef => {
-                    NavigationService.setTopLevelNavigator(navigatorRef);
-                }}
-            />
+            <Root>
+                <AppContainer
+                    ref={navigatorRef => {
+                        NavigationService.setTopLevelNavigator(navigatorRef);
+                    }}
+                />
+            </Root>
         );
     }
 }

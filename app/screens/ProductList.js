@@ -3,6 +3,7 @@ import { Container } from "native-base";
 import React, { Component } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import Product from "../components/Product";
+import { baseUrl, productsEndpoint } from "../helper/routes";
 
 class ProductList extends Component {
     constructor() {
@@ -14,25 +15,31 @@ class ProductList extends Component {
     }
 
     componentDidMount() {
-        const baseUrl = "http://192.168.0.9:3333";
-
-        axios
-            .get(baseUrl + "/v1/products")
-            .then(response => {
-                const listProduct = response.data.data;
-                this.setState({
-                    listProduct,
-                    isLoaded: true
-                });
-            })
-            .catch(function(error) {
-                console.log(error);
+        const { navigation } = this.props;
+        navigation.addListener("willBlur", () => {
+            this.setState({
+                isLoaded: false
             });
+        });
+
+        navigation.addListener("didFocus", () => {
+            axios
+                .get(productsEndpoint)
+                .then(response => {
+                    const listProduct = response.data.data;
+                    this.setState({
+                        listProduct,
+                        isLoaded: true
+                    });
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        });
     }
 
     render() {
         const { isLoaded } = this.state;
-
         return (
             <Container>
                 {isLoaded ? (
@@ -52,9 +59,7 @@ class ProductList extends Component {
                                 productPrice={item.price
                                     .toString()
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
-                                productPhoto={`http://192.168.0.9:3333${
-                                    item.image
-                                }`}
+                                productPhoto={`${baseUrl}${item.image}`}
                                 goToProductDetail={() =>
                                     this.props.navigation.navigate(
                                         "Detailscreen",

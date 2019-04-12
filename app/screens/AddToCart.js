@@ -19,6 +19,7 @@ import {
 import React, { Component } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import NavigationService from "../../NavigationService";
+import { baseUrl, ordersEndpoint, productsEndpoint } from "../helper/routes";
 
 class AddToCart extends Component {
     constructor() {
@@ -36,14 +37,12 @@ class AddToCart extends Component {
 
     componentDidMount() {
         const { navigation } = this.props;
-        const baseUrl = "http://192.168.0.9:3333";
         const getProductId = navigation.getParam("productId", "");
 
         axios
-            .get(`${baseUrl}/v1/products/${getProductId}`)
+            .get(`${productsEndpoint}/${getProductId}`)
             .then(response => {
                 const detailProduct = response.data.data;
-                console.log(detailProduct);
                 this.setState({
                     productId: detailProduct.id,
                     productImage: detailProduct.image,
@@ -105,7 +104,7 @@ class AddToCart extends Component {
                                     <Thumbnail
                                         square
                                         source={{
-                                            uri: `http://192.168.0.9:3333${
+                                            uri: `${baseUrl}${
                                                 this.state.productImage
                                             }`
                                         }}
@@ -135,7 +134,7 @@ class AddToCart extends Component {
                                 height: 50
                             }}
                         >
-                            <Text>Jumlah</Text>
+                            <Text>Quantity</Text>
                             <Container
                                 style={{
                                     justifyContent: "flex-end",
@@ -197,7 +196,7 @@ class AddToCart extends Component {
                             flex: 0.3
                         }}
                     >
-                        <Text>Total Harga</Text>
+                        <Text>Price Total</Text>
                         <Text style={{ color: "#ff5722" }}>
                             Rp.
                             {(this.state.quantity * this.state.productPrice)
@@ -208,9 +207,8 @@ class AddToCart extends Component {
                     <Button
                         style={styles.buttonCustom}
                         onPress={() => {
-                            const baseUrl = "http://192.168.0.9:3333";
                             axios
-                                .post(`${baseUrl}/v1/orders`, {
+                                .post(ordersEndpoint, {
                                     product_id: this.state.productId,
                                     qty: this.state.quantity,
                                     price: this.state.productPrice

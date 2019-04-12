@@ -17,6 +17,25 @@ class ProductCart extends Component {
     render() {
         return (
             <Card>
+                <CardItem
+                    header
+                    bordered
+                    style={{
+                        justifyContent: "flex-end",
+                        paddingTop: 0,
+                        paddingBottom: 0,
+                        paddingLeft: 0,
+                        paddingRight: 0
+                    }}
+                >
+                    <Button small transparent onPress={this.props.deleteList}>
+                        <Icon
+                            type="Entypo"
+                            name="cross"
+                            style={{ fontSize: 20, color: "gray" }}
+                        />
+                    </Button>
+                </CardItem>
                 <CardItem>
                     <Left>
                         <Thumbnail
@@ -26,8 +45,10 @@ class ProductCart extends Component {
                             }}
                         />
                         <Body>
-                            <Text>{this.props.productName}</Text>
-                            <Text style={{ color: "#ff5722" }}>
+                            <Text style={{ fontSize: 15 }}>
+                                {this.props.productName}
+                            </Text>
+                            <Text style={{ color: "#ff5722", fontSize: 15 }}>
                                 Rp.
                                 {this.props.productPrice
                                     .toString()
@@ -43,18 +64,21 @@ class ProductCart extends Component {
                             success
                             onPress={this.props.decrementButton}
                         >
-                            <Icon type="AntDesign" name="minus" />
+                            <Icon
+                                type="AntDesign"
+                                name="minus"
+                                style={{ fontSize: 12 }}
+                            />
                         </Button>
                         <Item
                             style={{
-                                width: 40,
-                                height: 38,
+                                width: 30,
+                                height: 20,
                                 margin: 3
                             }}
                         >
                             <Input
                                 style={{
-                                    width: 1,
                                     textAlign: "center"
                                 }}
                                 value={this.props.quantity
@@ -72,20 +96,13 @@ class ProductCart extends Component {
                             success
                             onPress={this.props.incrementButton}
                         >
-                            <Icon type="AntDesign" name="plus" />
+                            <Icon
+                                type="AntDesign"
+                                name="plus"
+                                style={{ fontSize: 12 }}
+                            />
                         </Button>
                     </Right>
-                </CardItem>
-                <CardItem footer bordered>
-                    <Button
-                        full
-                        danger
-                        bordered
-                        style={{ flex: 1 }}
-                        onPress={this.props.deleteList}
-                    >
-                        <Icon type="AntDesign" name="delete" />
-                    </Button>
                 </CardItem>
             </Card>
         );

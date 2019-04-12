@@ -14,6 +14,12 @@ import React, { Component } from "react";
 import { Image, ScrollView, StyleSheet } from "react-native";
 
 class Details extends Component {
+    constructor() {
+        super();
+        this.state = {
+            toggleButton: false
+        };
+    }
     render() {
         return (
             <ScrollView>
@@ -26,9 +32,20 @@ class Details extends Component {
                             }}
                             resizeMode="cover"
                         />
-                        <Fab style={styles.fabCustom}>
+                        <Fab
+                            style={styles.fabCustom}
+                            onPress={() => {
+                                this.setState({
+                                    toggleButton: !this.state.toggleButton
+                                });
+                            }}
+                        >
                             <Icon
-                                style={styles.iconCustom}
+                                style={
+                                    this.state.toggleButton
+                                        ? styles.iconActive
+                                        : styles.icon
+                                }
                                 type="AntDesign"
                                 name="heart"
                                 position="bottomRight"
@@ -118,9 +135,7 @@ class Details extends Component {
                         </Body>
                     </CardItem>
                     <CardItem>
-                        <Body>
-                            <Text>{this.props.productDescription}</Text>
-                        </Body>
+                        <Body>{this.props.productDescription}</Body>
                     </CardItem>
                 </Card>
             </ScrollView>
@@ -145,7 +160,10 @@ const styles = StyleSheet.create({
     fabCustom: {
         backgroundColor: "#fff"
     },
-    iconCustom: {
+    iconActive: {
+        color: "red"
+    },
+    icon: {
         color: "gray"
     }
 });

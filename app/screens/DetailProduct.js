@@ -1,9 +1,10 @@
 import axios from "axios";
-import { Container } from "native-base";
+import { Container, Text } from "native-base";
 import React, { Component } from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
 import Detail from "../components/Detail";
 import FooterDetail from "../components/FooterDetail";
+import { baseUrl, productsEndpoint } from "../helper/routes";
 
 class DetailProduct extends Component {
     constructor() {
@@ -12,6 +13,7 @@ class DetailProduct extends Component {
             productId: "",
             productImage: "",
             productName: "",
+            productDescription: "",
             productPrice: 0,
             isLoaded: false
         };
@@ -19,11 +21,10 @@ class DetailProduct extends Component {
 
     componentDidMount() {
         const { navigation } = this.props;
-        const baseUrl = "http://192.168.0.9:3333";
         const getProductId = navigation.getParam("productId", "");
 
         axios
-            .get(`${baseUrl}/v1/products/${getProductId}`)
+            .get(`${productsEndpoint}/${getProductId}`)
             .then(response => {
                 const detailProduct = response.data.data;
 
@@ -32,6 +33,7 @@ class DetailProduct extends Component {
                     productImage: detailProduct.image,
                     productName: detailProduct.name,
                     productPrice: detailProduct.price,
+                    productDescription: detailProduct.description,
                     isLoaded: true
                 });
             })
@@ -42,6 +44,13 @@ class DetailProduct extends Component {
 
     render() {
         const { isLoaded } = this.state;
+
+        const newDescription = this.state.productDescription.split(",");
+        const descComponent = newDescription.map((x, i) => (
+            <Text style={{ paddingBottom: 5 }} key={i}>
+                - {x}
+            </Text>
+        ));
         return (
             <Container>
                 {isLoaded ? (
@@ -56,13 +65,12 @@ class DetailProduct extends Component {
                         ]}
                         renderItem={({ item }) => (
                             <Detail
-                                productImage={`http://192.168.0.9:3333${
-                                    item.productImage
-                                }`}
+                                productImage={`${baseUrl}${item.productImage}`}
                                 productName={item.productName}
                                 productPrice={item.productPrice
                                     .toString()
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
+                                productDescription={descComponent}
                             />
                         )}
                     />

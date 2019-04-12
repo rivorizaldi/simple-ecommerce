@@ -1,16 +1,21 @@
 import axios from "axios";
-import { Button, Container, Footer, Text } from "native-base";
+import { Button, Container, Footer, Text, Toast } from "native-base";
 import React, { Component } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import Modal from "react-native-modal";
 import EmptyCart from "../components/EmptyCart";
 import ProductCart from "../components/ProductCart";
+import { baseUrl, ordersEndpoint } from "../helper/routes";
 
 class Cart extends Component {
     constructor(props) {
         super(props);
         this.state = {
             cartList: [],
-            isLoaded: false
+            isLoaded: false,
+            isModalVisible: false,
+            deleteItem: "",
+            temporaryId: ""
         };
     }
 
@@ -23,16 +28,15 @@ class Cart extends Component {
         });
 
         navigation.addListener("didFocus", () => {
-            const baseUrl = "http://192.168.0.9:3333";
-
             axios
-                .get(baseUrl + "/v1/orders")
+                .get(ordersEndpoint)
                 .then(response => {
                     const cartList = response.data.data;
                     this.setState({
                         cartList,
                         isLoaded: true
                     });
+                    //const responseClone = response.clone();
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -41,18 +45,25 @@ class Cart extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const baseUrl = "http://192.168.0.9:3333";
         if (this.state.cartList !== prevState.cartList) {
             this.state.cartList.forEach(obj => {
                 axios
-                    .patch(baseUrl + "/v1/orders/" + obj.id, { qty: obj.qty })
-                    .then(response => {
-                        console.log("sucess");
+                    .patch(`${ordersEndpoint}/${obj.id}`, {
+                        qty: obj.qty
                     })
+                    .then(response => {})
                     .catch(function(error) {
                         console.log(error);
                     });
             });
+
+            if (prevState.cartList.length === 0) {
+                console.log("muncul duluan");
+            } else if (prevState.cartList.length > this.state.cartList.length) {
+                // this.setState({
+                //     isLoaded: true
+                // });
+            }
         }
     }
 
@@ -92,16 +103,36 @@ class Cart extends Component {
         }
     };
 
+    toggleModal = () =>
+        this.setState({ isModalVisible: !this.state.isModalVisible });
+
     delete = (item, index) => () => {
-        const baseUrl = "http://192.168.0.9:3333";
+        this.setState({
+            isModalVisible: !this.state.isModalVisible,
+            deleteItem: this.state.cartList[index].product.name,
+            temporaryId: this.state.cartList[index].id
+        });
+    };
+
+    deleteItem = () => {
         axios
-            .delete(baseUrl + "/v1/orders/" + item.id)
+            .delete(`${ordersEndpoint}/${this.state.temporaryId}`)
+            .then(() => {
+                this.setState({
+                    isModalVisible: !this.state.isModalVisible
+                });
+            })
             .then(() => {
                 const filter = this.state.cartList.filter(
-                    x => x.id !== item.id
+                    x => x.id !== this.state.temporaryId
                 );
+
                 this.setState({
                     cartList: [...filter]
+                });
+                Toast.show({
+                    text: `${this.state.deleteItem} has deleted from cart`,
+                    buttonText: "Okay"
                 });
             })
             .catch(function(error) {
@@ -159,7 +190,7 @@ class Cart extends Component {
                                 data={this.state.cartList}
                                 renderItem={({ item, index }) => (
                                     <ProductCart
-                                        productImage={`http://192.168.0.9:3333${
+                                        productImage={`${baseUrl}${
                                             item.product.image
                                         }`}
                                         productName={item.product.name}
@@ -191,7 +222,7 @@ class Cart extends Component {
                                         flex: 0.3
                                     }}
                                 >
-                                    <Text>Total Harga</Text>
+                                    <Text>Price Total</Text>
                                     <Text style={{ color: "#ff5722" }}>
                                         Rp.
                                         {this.state.cartList
@@ -226,6 +257,50 @@ class Cart extends Component {
                     ) : (
                         <EmptyCart />
                     )}
+                    <Modal
+                        isVisible={this.state.isModalVisible}
+                        onBackdropPress={this.toggleModal}
+                        onBackButtonPress={this.toggleModal}
+                        animationOutTiming={300}
+                        animationIn={"fadeIn"}
+                        animationOut={"fadeOut"}
+                    >
+                        <View
+                            style={{
+                                backgroundColor: "#fff",
+                                justifyContent: "center",
+                                padding: 8,
+                                borderRadius: 5
+                            }}
+                        >
+                            <Text style={{ fontWeight: "bold" }}>
+                                Do You Want To Delete {this.state.deleteItem}{" "}
+                                From Cart ?
+                            </Text>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    justifyContent: "flex-end"
+                                }}
+                            >
+                                <Button
+                                    transparent
+                                    dark
+                                    onPress={this.deleteItem}
+                                >
+                                    <Text>Yes</Text>
+                                </Button>
+
+                                <Button
+                                    transparent
+                                    dark
+                                    onPress={this.toggleModal}
+                                >
+                                    <Text>No</Text>
+                                </Button>
+                            </View>
+                        </View>
+                    </Modal>
                 </Container>
             );
         } else {
