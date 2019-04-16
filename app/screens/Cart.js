@@ -57,13 +57,13 @@ class Cart extends Component {
                     });
             });
 
-            if (prevState.cartList.length === 0) {
-                console.log("muncul duluan");
-            } else if (prevState.cartList.length > this.state.cartList.length) {
-                // this.setState({
-                //     isLoaded: true
-                // });
-            }
+            // if (prevState.cartList.length === 0) {
+            //     console.log("muncul duluan");
+            // } else if (prevState.cartList.length > this.state.cartList.length) {
+            //     // this.setState({
+            //     //     isLoaded: true
+            //     // });
+            // }
         }
     }
 

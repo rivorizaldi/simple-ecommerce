@@ -6,12 +6,13 @@ import Product from "../components/Product";
 import { baseUrl, productsEndpoint } from "../helper/routes";
 
 class ProductList extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             listProduct: [],
             isLoaded: false
         };
+        console.log(props);
     }
 
     componentDidMount() {

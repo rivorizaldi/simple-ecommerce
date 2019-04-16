@@ -15,7 +15,8 @@ class DetailProduct extends Component {
             productName: "",
             productDescription: "",
             productPrice: 0,
-            isLoaded: false
+            isLoaded: false,
+            isActive: false
         };
     }
 
@@ -41,6 +42,12 @@ class DetailProduct extends Component {
                 console.log(error);
             });
     }
+
+    toggleActive = () => {
+        this.setState({
+            isActive: !this.state.isActive
+        });
+    };
 
     render() {
         const { isLoaded } = this.state;
@@ -71,6 +78,8 @@ class DetailProduct extends Component {
                                     .toString()
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                                 productDescription={descComponent}
+                                toggleActive={this.toggleActive}
+                                isActive={this.state.isActive}
                             />
                         )}
                     />

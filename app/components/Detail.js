@@ -34,15 +34,11 @@ class Details extends Component {
                         />
                         <Fab
                             style={styles.fabCustom}
-                            onPress={() => {
-                                this.setState({
-                                    toggleButton: !this.state.toggleButton
-                                });
-                            }}
+                            onPress={this.props.toggleActive}
                         >
                             <Icon
                                 style={
-                                    this.state.toggleButton
+                                    this.props.isActive
                                         ? styles.iconActive
                                         : styles.icon
                                 }

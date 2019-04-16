@@ -6,6 +6,8 @@ import {
     createBottomTabNavigator,
     createStackNavigator
 } from "react-navigation";
+import { Provider } from "react-redux";
+import store from "./app/redux/store";
 import AddBuyNow from "./app/screens/AddBuyNow";
 import AddToCart from "./app/screens/AddToCart";
 import Cart from "./app/screens/Cart";
@@ -55,7 +57,6 @@ const AppTabNavigator = createBottomTabNavigator(
             activeTintColor: "#03ac0e",
             inactiveTintColor: "#494d52"
         }
-        // lazy: false
     }
 );
 
@@ -126,13 +127,17 @@ const AppContainer = createAppContainer(AppNavigator);
 export default class App extends Component {
     render() {
         return (
-            <Root>
-                <AppContainer
-                    ref={navigatorRef => {
-                        NavigationService.setTopLevelNavigator(navigatorRef);
-                    }}
-                />
-            </Root>
+            <Provider store={store}>
+                <Root>
+                    <AppContainer
+                        ref={navigatorRef => {
+                            NavigationService.setTopLevelNavigator(
+                                navigatorRef
+                            );
+                        }}
+                    />
+                </Root>
+            </Provider>
         );
     }
 }
