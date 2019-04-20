@@ -2,6 +2,7 @@ import axios from "axios";
 import { Container, Text } from "native-base";
 import React, { Component } from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
+import { connect } from "react-redux";
 import Detail from "../components/Detail";
 import FooterDetail from "../components/FooterDetail";
 import { baseUrl, productsEndpoint } from "../helper/routes";
@@ -106,4 +107,21 @@ class DetailProduct extends Component {
     }
 }
 
-export default DetailProduct;
+const mapStateToProps = state => {
+    console.log("mapstate", state.products.productList);
+    return {
+        productList: state.products.productList,
+        isLoaded: state.products.isLoaded
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        showProductlist: () => dispatch(showProduct())
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DetailProduct);

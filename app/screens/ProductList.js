@@ -1,21 +1,25 @@
-import axios from "axios";
 import { Container } from "native-base";
 import React, { Component } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import { connect } from "react-redux";
 import Product from "../components/Product";
-import { baseUrl, productsEndpoint } from "../helper/routes";
+import { baseUrl } from "../helper/routes";
+import { showProduct } from "../redux/actions/products";
 
 class ProductList extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
-            listProduct: [],
             isLoaded: false
         };
-        console.log(props);
+    }
+
+    componentDidUpdate() {
+        console.log("did update", this.props.productList);
     }
 
     componentDidMount() {
+        console.log("didmount", this.props.productList);
         const { navigation } = this.props;
         navigation.addListener("willBlur", () => {
             this.setState({
@@ -24,26 +28,24 @@ class ProductList extends Component {
         });
 
         navigation.addListener("didFocus", () => {
-            axios
-                .get(productsEndpoint)
-                .then(response => {
-                    const listProduct = response.data.data;
-                    this.setState({
-                        listProduct,
-                        isLoaded: true
-                    });
-                })
-                .catch(function(error) {
-                    console.log(error);
+            console.log("dalam didfocus", this.props.productList);
+            this.props.showProductlist();
+
+            if (this.props.productList.length > 0) {
+                this.setState({
+                    isLoaded: true
                 });
+            }
         });
+        console.log("setelah didfocus", this.props.productList);
     }
 
     render() {
-        const { isLoaded } = this.state;
+        // const { isLoaded } = this.state;
+        // console.log("render", this.props.productList);
         return (
             <Container>
-                {isLoaded ? (
+                {this.props.isLoaded ? (
                     <FlatList
                         columnWrapperStyle={{
                             marginTop: 8,
@@ -53,7 +55,7 @@ class ProductList extends Component {
                         keyExtractor={item => item.id.toString()}
                         horizontal={false}
                         numColumns={2}
-                        data={this.state.listProduct}
+                        data={this.props.productList}
                         renderItem={({ item }) => (
                             <Product
                                 productName={item.name}
@@ -89,4 +91,21 @@ const style = StyleSheet.create({
     }
 });
 
-export default ProductList;
+const mapStateToProps = state => {
+    console.log("mapstate", state.products.productList);
+    return {
+        productList: state.products.productList,
+        isLoaded: state.products.isLoaded
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        showProductlist: () => dispatch(showProduct())
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ProductList);

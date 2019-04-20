@@ -36,7 +36,6 @@ class Cart extends Component {
                         cartList,
                         isLoaded: true
                     });
-                    //const responseClone = response.clone();
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -57,13 +56,13 @@ class Cart extends Component {
                     });
             });
 
-            // if (prevState.cartList.length === 0) {
-            //     console.log("muncul duluan");
-            // } else if (prevState.cartList.length > this.state.cartList.length) {
-            //     // this.setState({
-            //     //     isLoaded: true
-            //     // });
-            // }
+            if (prevState.cartList.length === 0) {
+            } else if (prevState.cartList.length < this.state.cartList.length) {
+                Toast.show({
+                    text: `item has added from cart`,
+                    buttonText: "Okay"
+                });
+            }
         }
     }
 

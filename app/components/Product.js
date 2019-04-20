@@ -17,7 +17,14 @@ class Product extends Component {
                     </CardItem>
                     <CardItem style={styles.cardItemText}>
                         <Left>
-                            <Text>{this.props.productName}</Text>
+                            <Text
+                                style={{
+                                    fontFamily: "Montserrat-Bold",
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                {this.props.productName}
+                            </Text>
                         </Left>
                     </CardItem>
                     <CardItem style={styles.cardItemPrice}>
@@ -43,7 +50,9 @@ const styles = StyleSheet.create({
         height: 100,
         paddingTop: 0,
         paddingBottom: 0,
-        alignItems: "flex-start"
+        alignItems: "flex-start",
+        fontFamily: "Montserrat-Bold",
+        fontWeight: "bold"
     },
     cardItemPrice: {
         padding: 0

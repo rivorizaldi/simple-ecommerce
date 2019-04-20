@@ -13,7 +13,9 @@ import AddToCart from "./app/screens/AddToCart";
 import Cart from "./app/screens/Cart";
 import CheckOut from "./app/screens/CheckOut";
 import DetailProduct from "./app/screens/DetailProduct";
+import Login from "./app/screens/Login";
 import ProductList from "./app/screens/ProductList";
+import Register from "./app/screens/Register";
 import NavigationService from "./NavigationService";
 
 const AppTabNavigator = createBottomTabNavigator(
@@ -29,6 +31,12 @@ const AppTabNavigator = createBottomTabNavigator(
             navigationOptions: () => ({
                 title: "Cart"
             })
+        },
+        LoginScreen: {
+            screen: Login,
+            navigationOptions: () => ({
+                title: "Account"
+            })
         }
     },
     {
@@ -41,6 +49,8 @@ const AppTabNavigator = createBottomTabNavigator(
                     iconName = "home";
                 } else if (routeName === "CartScreen") {
                     iconName = `shopping-cart`;
+                } else if (routeName === "LoginScreen") {
+                    iconName = "user-alt";
                 }
 
                 return (
@@ -68,6 +78,8 @@ AppTabNavigator.navigationOptions = ({ navigation }) => {
         title = "Product List";
     } else if (routeName === "CartScreen") {
         title = "Cart";
+    } else if (routeName === "LoginScreen") {
+        title = "Profile";
     }
     return { title };
 };
@@ -80,7 +92,9 @@ const AppNavigator = createStackNavigator(
             navigationOptions: () => ({
                 title: "Product Details",
                 headerStyle: {
-                    backgroundColor: "#fff"
+                    backgroundColor: "#fff",
+                    fontFamily: "Montserrat-Bold",
+                    fontWeight: "bold"
                 },
                 headerTintColor: "#000",
                 tabBarVisible: "false"
@@ -91,7 +105,9 @@ const AppNavigator = createStackNavigator(
             navigationOptions: () => ({
                 title: "Product Cart Detail",
                 headerStyle: {
-                    backgroundColor: "#fff"
+                    backgroundColor: "#fff",
+                    fontFamily: "Montserrat-Bold",
+                    fontWeight: "bold"
                 },
                 headerTintColor: "#000"
             })
@@ -101,7 +117,9 @@ const AppNavigator = createStackNavigator(
             navigationOptions: () => ({
                 title: "Product Buy Now Detail",
                 headerStyle: {
-                    backgroundColor: "#fff"
+                    backgroundColor: "#fff",
+                    fontFamily: "Montserrat-Bold",
+                    fontWeight: "bold"
                 },
                 headerTintColor: "#000"
             })
@@ -111,7 +129,21 @@ const AppNavigator = createStackNavigator(
             navigationOptions: () => ({
                 title: "CheckOut",
                 headerStyle: {
-                    backgroundColor: "#fff"
+                    backgroundColor: "#fff",
+                    fontFamily: "Montserrat-Bold",
+                    fontWeight: "bold"
+                },
+                headerTintColor: "#000"
+            })
+        },
+        Register: {
+            screen: Register,
+            navigationOptions: () => ({
+                title: "Register",
+                headerStyle: {
+                    backgroundColor: "#fff",
+                    fontFamily: "Montserrat-Bold",
+                    fontWeight: "bold"
                 },
                 headerTintColor: "#000"
             })

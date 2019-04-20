@@ -12,8 +12,8 @@ import {
     Text
 } from "native-base";
 import React, { Component } from "react";
-import { StyleSheet } from "react-native";
-// import Modal from "react-native-modal";
+import { StyleSheet, View } from "react-native";
+import Modal from "react-native-modal";
 
 class CheckOut extends Component {
     constructor(props) {
@@ -23,36 +23,28 @@ class CheckOut extends Component {
             isModalVisible: false,
             showToast: false
         };
-
-        //this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
 
-    _toggleModal = () =>
-        this.setState({ isModalVisible: !this.state.isModalVisible });
-
-    // handleBackButtonClick() {
-    //     this.props.navigation.navigate("CartScreen", {
-    //         productName: ""
-    //     });
-    //     return true;
-    // }
     onValueChange2(value) {
         this.setState({
             selected2: value
         });
     }
 
-    componentDidMount() {
-        // BackHandler.addEventListener(
-        //     "hardwareBackPress",
-        //     this.handleBackButtonClick
-        // );
-    }
+    toggleModal = () =>
+        this.setState({ isModalVisible: !this.state.isModalVisible });
 
     render() {
         const { navigation } = this.props;
         const getTotalPrice = navigation.getParam("totalPrice", "");
         const getTotalPriceBuy = navigation.getParam("productPrice", "");
+        // const shipment =
+        //     undefined ||
+        //     this.state.selected2
+        //         .replace(/\./g, "")
+        //         .match(/\d+/g)
+        //         .map(Number);
+        console.log(this.state.selected2);
         return (
             <Container>
                 <Content padder>
@@ -102,39 +94,22 @@ class CheckOut extends Component {
                                 selectedValue={this.state.selected2}
                                 onValueChange={this.onValueChange2.bind(this)}
                             >
-                                <Picker.Item label="JNE" value="key0" />
-                                <Picker.Item label="TIKI" value="key1" />
-                                <Picker.Item label="J&T" value="key2" />
-                                <Picker.Item label="RPX" value="key3" />
-                                <Picker.Item label="POS" value="key4" />
+                                <Picker.Item
+                                    label="JNE Reguler (18.000)"
+                                    value="key0"
+                                />
+                                <Picker.Item
+                                    label="TIKI Reguler (18.000)"
+                                    value="key1"
+                                />
+                                <Picker.Item
+                                    label="J&T Reguler (20.000)"
+                                    value="key2"
+                                />
                             </Picker>
                         </Item>
                     </Form>
                 </Content>
-                {/* <View>
-                    <Modal
-                        isVisible={this.state.isModalVisible}
-                        hasBackdrop={true}
-                        backdropColor={"#fff"}
-                        style={{
-                            height: 20,
-                            margin: 10,
-                            flex: 0,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: "red"
-                        }}
-                        onBackButtonPress={this._toggleModal}
-                        onBackdropPress={this._toggleModal}
-                    >
-                        <View>
-                            <Text>I am Modal!</Text>
-                            <Button onPress={this._toggleModal}>
-                                <Text>Close</Text>
-                            </Button>
-                        </View>
-                    </Modal>
-                </View> */}
                 <Footer style={styles.footerCustom}>
                     <Container
                         style={{
@@ -152,10 +127,48 @@ class CheckOut extends Component {
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                         </Text>
                     </Container>
-                    <Button style={styles.buttonCustom} onPress={() => {}}>
+                    <Button
+                        style={styles.buttonCustom}
+                        onPress={this.toggleModal}
+                    >
                         <Text>Pay</Text>
                     </Button>
                 </Footer>
+                <Modal
+                    isVisible={this.state.isModalVisible}
+                    onBackdropPress={this.toggleModal}
+                    onBackButtonPress={this.toggleModal}
+                    animationOutTiming={300}
+                    animationIn={"fadeIn"}
+                    animationOut={"fadeOut"}
+                >
+                    <View
+                        style={{
+                            backgroundColor: "#fff",
+                            justifyContent: "center",
+                            padding: 8,
+                            borderRadius: 5
+                        }}
+                    >
+                        <Text style={{ fontWeight: "bold" }}>
+                            Do you want to Pay Now ?
+                        </Text>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "flex-end"
+                            }}
+                        >
+                            <Button transparent dark>
+                                <Text>Yes</Text>
+                            </Button>
+
+                            <Button transparent dark onPress={this.toggleModal}>
+                                <Text>No</Text>
+                            </Button>
+                        </View>
+                    </View>
+                </Modal>
             </Container>
         );
     }
