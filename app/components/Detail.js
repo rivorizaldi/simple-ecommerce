@@ -14,13 +14,15 @@ import React, { Component } from "react";
 import { Image, ScrollView, StyleSheet } from "react-native";
 
 class Details extends Component {
-    constructor() {
-        super();
-        this.state = {
-            toggleButton: false
-        };
-    }
     render() {
+        const description = this.props.productDescription.split(",");
+        const descComponent = description.map((x, i) => (
+            <Text style={{ paddingBottom: 5 }} key={i}>
+                - {x}
+            </Text>
+        ));
+        console.log(test);
+
         return (
             <ScrollView>
                 <Card>
@@ -131,7 +133,7 @@ class Details extends Component {
                         </Body>
                     </CardItem>
                     <CardItem>
-                        <Body>{this.props.productDescription}</Body>
+                        <Body>{descComponent}</Body>
                     </CardItem>
                 </Card>
             </ScrollView>

@@ -4,48 +4,25 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import Product from "../components/Product";
 import { baseUrl } from "../helper/routes";
-import { showProduct } from "../redux/actions/products";
+import {
+    fetchDataDetail,
+    fetchProductListData
+} from "../redux/actions/products";
 
 class ProductList extends Component {
-    constructor() {
-        super();
-        this.state = {
-            isLoaded: false
-        };
-    }
-
-    componentDidUpdate() {
-        console.log("did update", this.props.productList);
-    }
-
     componentDidMount() {
-        console.log("didmount", this.props.productList);
-        const { navigation } = this.props;
-        navigation.addListener("willBlur", () => {
-            this.setState({
-                isLoaded: false
-            });
-        });
-
-        navigation.addListener("didFocus", () => {
-            console.log("dalam didfocus", this.props.productList);
-            this.props.showProductlist();
-
-            if (this.props.productList.length > 0) {
-                this.setState({
-                    isLoaded: true
-                });
-            }
-        });
-        console.log("setelah didfocus", this.props.productList);
+        this.props.fecthDataList();
     }
 
     render() {
-        // const { isLoaded } = this.state;
-        // console.log("render", this.props.productList);
         return (
             <Container>
-                {this.props.isLoaded ? (
+                {this.props.productList.isPending && (
+                    <View style={style.spinnerCustom}>
+                        <ActivityIndicator size="small" color="#ff5722" />
+                    </View>
+                )}
+                {this.props.productList.productList.length ? (
                     <FlatList
                         columnWrapperStyle={{
                             marginTop: 8,
@@ -55,7 +32,7 @@ class ProductList extends Component {
                         keyExtractor={item => item.id.toString()}
                         horizontal={false}
                         numColumns={2}
-                        data={this.props.productList}
+                        data={this.props.productList.productList}
                         renderItem={({ item }) => (
                             <Product
                                 productName={item.name}
@@ -63,22 +40,16 @@ class ProductList extends Component {
                                     .toString()
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                                 productPhoto={`${baseUrl}${item.image}`}
-                                goToProductDetail={() =>
+                                goToProductDetail={() => {
                                     this.props.navigation.navigate(
-                                        "Detailscreen",
-                                        {
-                                            productId: item.id
-                                        }
-                                    )
-                                }
+                                        "Detailscreen"
+                                    );
+                                    this.props.fecthDataDetail(item.id);
+                                }}
                             />
                         )}
                     />
-                ) : (
-                    <View style={style.spinnerCustom}>
-                        <ActivityIndicator size="small" color="#ff5722" />
-                    </View>
-                )}
+                ) : null}
             </Container>
         );
     }
@@ -92,16 +63,15 @@ const style = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-    console.log("mapstate", state.products.productList);
     return {
-        productList: state.products.productList,
-        isLoaded: state.products.isLoaded
+        productList: state.products
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        showProductlist: () => dispatch(showProduct())
+        fecthDataList: () => dispatch(fetchProductListData()),
+        fecthDataDetail: id => dispatch(fetchDataDetail(id))
     };
 };
 

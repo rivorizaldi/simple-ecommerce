@@ -1,47 +1,17 @@
-import axios from "axios";
-import { Container, Text } from "native-base";
+import { Container } from "native-base";
 import React, { Component } from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import Detail from "../components/Detail";
 import FooterDetail from "../components/FooterDetail";
-import { baseUrl, productsEndpoint } from "../helper/routes";
+import { baseUrl } from "../helper/routes";
 
 class DetailProduct extends Component {
     constructor() {
         super();
         this.state = {
-            productId: "",
-            productImage: "",
-            productName: "",
-            productDescription: "",
-            productPrice: 0,
-            isLoaded: false,
             isActive: false
         };
-    }
-
-    componentDidMount() {
-        const { navigation } = this.props;
-        const getProductId = navigation.getParam("productId", "");
-
-        axios
-            .get(`${productsEndpoint}/${getProductId}`)
-            .then(response => {
-                const detailProduct = response.data.data;
-
-                this.setState({
-                    productId: detailProduct.id,
-                    productImage: detailProduct.image,
-                    productName: detailProduct.name,
-                    productPrice: detailProduct.price,
-                    productDescription: detailProduct.description,
-                    isLoaded: true
-                });
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
     }
 
     toggleActive = () => {
@@ -50,44 +20,38 @@ class DetailProduct extends Component {
         });
     };
 
-    render() {
-        const { isLoaded } = this.state;
+    isEmpty = obj => {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) return false;
+        }
+        return true;
+    };
 
-        const newDescription = this.state.productDescription.split(",");
-        const descComponent = newDescription.map((x, i) => (
-            <Text style={{ paddingBottom: 5 }} key={i}>
-                - {x}
-            </Text>
-        ));
+    render() {
         return (
             <Container>
-                {isLoaded ? (
+                {this.props.productDetail.isPending && (
+                    <View style={style.spinnerCustom}>
+                        <ActivityIndicator size="small" color="#ff5722" />
+                    </View>
+                )}
+                {this.isEmpty(this.props.productDetail.productDetail) ? null : (
                     <FlatList
-                        data={[
-                            {
-                                key: this.state.productId.toString(),
-                                productImage: this.state.productImage,
-                                productName: this.state.productName,
-                                productPrice: this.state.productPrice
-                            }
-                        ]}
+                        keyExtractor={item => item.id.toString()}
+                        data={[this.props.productDetail.productDetail]}
                         renderItem={({ item }) => (
                             <Detail
-                                productImage={`${baseUrl}${item.productImage}`}
-                                productName={item.productName}
-                                productPrice={item.productPrice
+                                productImage={`${baseUrl}${item.image}`}
+                                productName={item.name}
+                                productPrice={item.price
                                     .toString()
                                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
-                                productDescription={descComponent}
+                                productDescription={item.description}
                                 toggleActive={this.toggleActive}
                                 isActive={this.state.isActive}
                             />
                         )}
                     />
-                ) : (
-                    <View style={{ flex: 1, justifyContent: "center" }}>
-                        <ActivityIndicator size="small" color="#ff5722" />
-                    </View>
                 )}
 
                 <FooterDetail
@@ -107,21 +71,20 @@ class DetailProduct extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    console.log("mapstate", state.products.productList);
-    return {
-        productList: state.products.productList,
-        isLoaded: state.products.isLoaded
-    };
-};
+const style = StyleSheet.create({
+    spinnerCustom: {
+        flex: 1,
+        justifyContent: "center"
+    }
+});
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = state => {
     return {
-        showProductlist: () => dispatch(showProduct())
+        productDetail: state.products
     };
 };
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    null
 )(DetailProduct);
