@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
     Body,
     Button,
@@ -18,42 +17,18 @@ import {
 } from "native-base";
 import React, { Component } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { connect } from "react-redux";
 import NavigationService from "../../NavigationService";
-import { baseUrl, ordersEndpoint, productsEndpoint } from "../helper/routes";
+import { baseUrl } from "../helper/routes";
+import { storeCartData } from "../redux/actions/cart";
 
 class AddToCart extends Component {
     constructor() {
         super();
         this.state = {
             quantity: 1,
-            totalHarga: 0,
-            isLoaded: false,
-            productId: "",
-            productImage: "",
-            productName: "",
-            productPrice: 0
+            totalHarga: 0
         };
-    }
-
-    componentDidMount() {
-        const { navigation } = this.props;
-        const getProductId = navigation.getParam("productId", "");
-
-        axios
-            .get(`${productsEndpoint}/${getProductId}`)
-            .then(response => {
-                const detailProduct = response.data.data;
-                this.setState({
-                    productId: detailProduct.id,
-                    productImage: detailProduct.image,
-                    productName: detailProduct.name,
-                    productPrice: detailProduct.price,
-                    isLoaded: true
-                });
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
     }
 
     decrementQuantity = () => {
@@ -87,16 +62,29 @@ class AddToCart extends Component {
             });
         } else {
             this.setState({
-                quantity: text.replace(/[^0-9]/g, "")
+                quantity: text.replace(/\D/g, "")
             });
         }
     };
 
+    isEmpty = obj => {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) return false;
+        }
+        return true;
+    };
+
     render() {
-        const { isLoaded } = this.state;
         return (
             <Container>
-                {isLoaded ? (
+                {this.props.productCartDetail.isPending && (
+                    <View style={styles.spinnerCustom}>
+                        <ActivityIndicator size="small" color="#ff5722" />
+                    </View>
+                )}
+                {this.isEmpty(
+                    this.props.productCartDetail.productDetail
+                ) ? null : (
                     <Content>
                         <Card>
                             <CardItem>
@@ -105,15 +93,21 @@ class AddToCart extends Component {
                                         square
                                         source={{
                                             uri: `${baseUrl}${
-                                                this.state.productImage
+                                                this.props.productCartDetail
+                                                    .productDetail.image
                                             }`
                                         }}
                                     />
                                     <Body>
-                                        <Text>{this.state.productName}</Text>
+                                        <Text>
+                                            {
+                                                this.props.productCartDetail
+                                                    .productDetail.name
+                                            }
+                                        </Text>
                                         <Text style={{ color: "#ff5722" }}>
                                             Rp.
-                                            {this.state.productPrice
+                                            {this.props.productCartDetail.productDetail.price
                                                 .toString()
                                                 .replace(
                                                     /(\d)(?=(\d{3})+(?!\d))/g,
@@ -182,10 +176,6 @@ class AddToCart extends Component {
                             </Form>
                         </Content>
                     </Content>
-                ) : (
-                    <View style={{ flex: 1, justifyContent: "center" }}>
-                        <ActivityIndicator size="small" color="#ff5722" />
-                    </View>
                 )}
 
                 <Footer style={styles.footerCustom}>
@@ -199,7 +189,10 @@ class AddToCart extends Component {
                         <Text>Price Total</Text>
                         <Text style={{ color: "#ff5722" }}>
                             Rp.
-                            {(this.state.quantity * this.state.productPrice)
+                            {(
+                                this.state.quantity *
+                                this.props.productCartDetail.productDetail.price
+                            )
                                 .toString()
                                 .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                         </Text>
@@ -207,15 +200,12 @@ class AddToCart extends Component {
                     <Button
                         style={styles.buttonCustom}
                         onPress={() => {
-                            axios
-                                .post(ordersEndpoint, {
-                                    product_id: this.state.productId,
-                                    qty: this.state.quantity,
-                                    price: this.state.productPrice
-                                })
-                                .then(res => {
-                                    NavigationService.navigate("CartScreen");
-                                });
+                            NavigationService.navigate("CartScreen");
+                            this.props.storeCartItem(
+                                this.props.productCartDetail.productDetail.id,
+                                this.state.quantity,
+                                this.props.productCartDetail.productDetail.price
+                            );
                         }}
                     >
                         <Text style={{ textAlign: "center" }}>Add To Cart</Text>
@@ -242,7 +232,27 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         paddingBottom: 8,
         justifyContent: "space-between"
+    },
+    spinnerCustom: {
+        flex: 1,
+        justifyContent: "center"
     }
 });
 
-export default AddToCart;
+const mapStateToProps = state => {
+    return {
+        productCartDetail: state.products
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        storeCartItem: (id, qty, price) =>
+            dispatch(storeCartData(id, qty, price))
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AddToCart);

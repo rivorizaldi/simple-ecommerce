@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import Detail from "../components/Detail";
 import FooterDetail from "../components/FooterDetail";
 import { baseUrl } from "../helper/routes";
+import { fetchDataDetail } from "../redux/actions/products";
 
 class DetailProduct extends Component {
     constructor() {
@@ -55,16 +56,18 @@ class DetailProduct extends Component {
                 )}
 
                 <FooterDetail
-                    buyNoW={() =>
-                        this.props.navigation.navigate("AddBuyNowAScreen", {
-                            productId: this.state.productId
-                        })
-                    }
-                    addCart={() =>
-                        this.props.navigation.navigate("AddChartScreen", {
-                            productId: this.state.productId
-                        })
-                    }
+                    buyNoW={() => {
+                        this.props.navigation.navigate("AddBuyNowAScreen");
+                        this.props.fecthDataDetail(
+                            this.props.productDetail.productDetail.id
+                        );
+                    }}
+                    addCart={() => {
+                        this.props.navigation.navigate("AddChartScreen");
+                        this.props.fecthDataDetail(
+                            this.props.productDetail.productDetail.id
+                        );
+                    }}
                 />
             </Container>
         );
@@ -84,7 +87,13 @@ const mapStateToProps = state => {
     };
 };
 
+const mapDispatchToProps = dispatch => {
+    return {
+        fecthDataDetail: id => dispatch(fetchDataDetail(id))
+    };
+};
+
 export default connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(DetailProduct);

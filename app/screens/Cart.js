@@ -1,18 +1,23 @@
-import axios from "axios";
-import { Button, Container, Footer, Text, Toast } from "native-base";
+import { Button, Container, Footer, Text } from "native-base";
 import React, { Component } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import Modal from "react-native-modal";
+import { connect } from "react-redux";
 import EmptyCart from "../components/EmptyCart";
 import ProductCart from "../components/ProductCart";
-import { baseUrl, ordersEndpoint } from "../helper/routes";
+import { baseUrl } from "../helper/routes";
+import {
+    decrementCart,
+    deleteCart,
+    fetchCartListData,
+    incrementCart,
+    updateCart
+} from "../redux/actions/cart";
 
 class Cart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            cartList: [],
-            isLoaded: false,
             isModalVisible: false,
             deleteItem: "",
             temporaryId: ""
@@ -21,85 +26,21 @@ class Cart extends Component {
 
     componentDidMount() {
         const { navigation } = this.props;
-        navigation.addListener("didBlur", () => {
-            this.setState({
-                isLoaded: false
-            });
-        });
-
         navigation.addListener("didFocus", () => {
-            axios
-                .get(ordersEndpoint)
-                .then(response => {
-                    const cartList = response.data.data;
-                    this.setState({
-                        cartList,
-                        isLoaded: true
-                    });
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
+            this.props.fecthCartList();
         });
-    }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.cartList !== prevState.cartList) {
-            this.state.cartList.forEach(obj => {
-                axios
-                    .patch(`${ordersEndpoint}/${obj.id}`, {
-                        qty: obj.qty
-                    })
-                    .then(response => {})
-                    .catch(function(error) {
-                        console.log(error);
-                    });
-            });
-
-            if (prevState.cartList.length === 0) {
-            } else if (prevState.cartList.length < this.state.cartList.length) {
-                Toast.show({
-                    text: `item has added from cart`,
-                    buttonText: "Okay"
-                });
-            }
-        }
+        navigation.addListener("didBlur", () => {
+            this.props.updateCart(this.props.cartList.cartList);
+        });
     }
 
     increment = (item, index) => () => {
-        this.setState({
-            cartList: [
-                ...this.state.cartList.slice(0, index),
-                Object.assign({}, this.state.cartList[index], {
-                    qty: item.qty + 1
-                }),
-                ...this.state.cartList.slice(index + 1)
-            ]
-        });
+        this.props.incrementCart(item.id);
     };
 
     decrement = (item, index) => () => {
-        if (this.state.cartList[index].qty == 1) {
-            this.setState({
-                cartList: [
-                    ...this.state.cartList.slice(0, index),
-                    Object.assign({}, this.state.cartList[index], {
-                        qty: 1
-                    }),
-                    ...this.state.cartList.slice(index + 1)
-                ]
-            });
-        } else {
-            this.setState({
-                cartList: [
-                    ...this.state.cartList.slice(0, index),
-                    Object.assign({}, this.state.cartList[index], {
-                        qty: item.qty - 1
-                    }),
-                    ...this.state.cartList.slice(index + 1)
-                ]
-            });
-        }
+        this.props.decrementCart(item.id);
     };
 
     toggleModal = () =>
@@ -108,35 +49,38 @@ class Cart extends Component {
     delete = (item, index) => () => {
         this.setState({
             isModalVisible: !this.state.isModalVisible,
-            deleteItem: this.state.cartList[index].product.name,
-            temporaryId: this.state.cartList[index].id
+            deleteItem: item.product.name,
+            temporaryId: item.id
         });
     };
 
     deleteItem = () => {
-        axios
-            .delete(`${ordersEndpoint}/${this.state.temporaryId}`)
-            .then(() => {
-                this.setState({
-                    isModalVisible: !this.state.isModalVisible
-                });
-            })
-            .then(() => {
-                const filter = this.state.cartList.filter(
-                    x => x.id !== this.state.temporaryId
-                );
-
-                this.setState({
-                    cartList: [...filter]
-                });
-                Toast.show({
-                    text: `${this.state.deleteItem} has deleted from cart`,
-                    buttonText: "Okay"
-                });
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
+        this.props.deleteCart(this.state.temporaryId);
+        this.setState({
+            isModalVisible: !this.state.isModalVisible
+        });
+        // axios
+        //     .delete(`${ordersEndpoint}/${this.state.temporaryId}`)
+        //     .then(() => {
+        //         this.setState({
+        //             isModalVisible: !this.state.isModalVisible
+        //         });
+        //     })
+        //     .then(() => {
+        //         const filter = this.state.cartList.filter(
+        //             x => x.id !== this.state.temporaryId
+        //         );
+        //         this.setState({
+        //             cartList: [...filter]
+        //         });
+        //         Toast.show({
+        //             text: `${this.state.deleteItem} has deleted from cart`,
+        //             buttonText: "Okay"
+        //         });
+        //     })
+        //     .catch(function(error) {
+        //         console.log(error);
+        //     });
     };
 
     editingText = (item, index) => () => {
@@ -178,22 +122,32 @@ class Cart extends Component {
     };
 
     render() {
-        const { isLoaded } = this.state;
-        if (isLoaded) {
+        if (this.props.cartList.isPending) {
+            return (
+                <View style={styles.spinnerCustom}>
+                    <ActivityIndicator size="small" color="#ff5722" />
+                </View>
+            );
+        } else {
             return (
                 <Container>
-                    {this.state.cartList.length ? (
+                    {this.props.cartList.cartList.length ? (
                         <Container>
                             <FlatList
                                 keyExtractor={item => item.id.toString()}
-                                data={this.state.cartList}
+                                data={this.props.cartList.cartList}
                                 renderItem={({ item, index }) => (
                                     <ProductCart
                                         productImage={`${baseUrl}${
                                             item.product.image
                                         }`}
                                         productName={item.product.name}
-                                        productPrice={item.product.price}
+                                        productPrice={item.price
+                                            .toString()
+                                            .replace(
+                                                /(\d)(?=(\d{3})+(?!\d))/g,
+                                                "$1."
+                                            )}
                                         quantity={item.qty}
                                         incrementButton={this.increment(
                                             item,
@@ -224,7 +178,7 @@ class Cart extends Component {
                                     <Text>Price Total</Text>
                                     <Text style={{ color: "#ff5722" }}>
                                         Rp.
-                                        {this.state.cartList
+                                        {this.props.cartList.cartList
                                             .map(x => x.price * x.qty)
                                             .reduce((acc, val) => acc + val)
                                             .toString()
@@ -238,14 +192,12 @@ class Cart extends Component {
                                     style={styles.buttonCustom}
                                     onPress={() => {
                                         this.props.navigation.navigate(
-                                            "CheckOutScreen",
-                                            {
-                                                totalPrice: this.state.cartList
-                                                    .map(x => x.price * x.qty)
-                                                    .reduce(
-                                                        (acc, val) => acc + val
-                                                    )
-                                            }
+                                            "CheckOutScreen"
+                                            // {
+                                            //     totalPrice: this.state.cartList
+                                            //         .map(x => x.price * x.qty)
+                                            //         .reduce((acc, val) => acc + val)
+                                            // }
                                         );
                                     }}
                                 >
@@ -302,12 +254,6 @@ class Cart extends Component {
                     </Modal>
                 </Container>
             );
-        } else {
-            return (
-                <View style={{ flex: 1, justifyContent: "center" }}>
-                    <ActivityIndicator size="small" color="#ff5722" />
-                </View>
-            );
         }
     }
 }
@@ -325,7 +271,30 @@ const styles = StyleSheet.create({
     footerCustom: {
         backgroundColor: "white",
         paddingBottom: 8
+    },
+    spinnerCustom: {
+        flex: 1,
+        justifyContent: "center"
     }
 });
 
-export default Cart;
+const mapStateToProps = state => {
+    return {
+        cartList: state.carts
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fecthCartList: () => dispatch(fetchCartListData()),
+        incrementCart: id => dispatch(incrementCart(id)),
+        decrementCart: id => dispatch(decrementCart(id)),
+        updateCart: arr => dispatch(updateCart(arr)),
+        deleteCart: id => dispatch(deleteCart(id))
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Cart);

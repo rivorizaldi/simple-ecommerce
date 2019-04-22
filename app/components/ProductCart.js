@@ -50,9 +50,7 @@ class ProductCart extends Component {
                             </Text>
                             <Text style={{ color: "#ff5722", fontSize: 15 }}>
                                 Rp.
-                                {this.props.productPrice
-                                    .toString()
-                                    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
+                                {this.props.productPrice}
                             </Text>
                         </Body>
                     </Left>

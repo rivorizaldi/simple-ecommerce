@@ -16,7 +16,10 @@ import {
     Thumbnail
 } from "native-base";
 import React, { Component } from "react";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { connect } from "react-redux";
+import { baseUrl } from "../helper/routes";
+import { fetchDataDetail } from "../redux/actions/products";
 
 class AddBuyNow extends Component {
     constructor() {
@@ -58,90 +61,121 @@ class AddBuyNow extends Component {
             });
         } else {
             this.setState({
-                quantity: text.replace(/[^0-9]/g, "")
+                quantity: text.replace(/\D/g, "")
             });
         }
     };
 
+    isEmpty = obj => {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) return false;
+        }
+        return true;
+    };
+
     render() {
-        const { navigation } = this.props;
-        const getProductImage = navigation.getParam("productImage", "No Image");
-        const getProductName = navigation.getParam("productName", "No Product");
-        const getProductPrice = navigation.getParam("productPrice", "No Price");
         return (
             <Container>
-                <Content scrollEnabled={false}>
-                    <Card>
-                        <CardItem>
-                            <Left>
-                                <Thumbnail square source={getProductImage} />
-                                <Body>
-                                    <Text>{getProductName}</Text>
-                                    <Text style={{ color: "#ff5722" }}>
-                                        Rp.
-                                        {getProductPrice
-                                            .toString()
-                                            .replace(
-                                                /(\d)(?=(\d{3})+(?!\d))/g,
-                                                "$1."
-                                            )}
-                                    </Text>
-                                </Body>
-                            </Left>
-                        </CardItem>
-                    </Card>
-                    <Container
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            marginRight: 17,
-                            marginLeft: 17,
-                            marginTop: 17
-                        }}
-                    >
-                        <Text>Jumlah</Text>
+                {this.props.productCartDetail.isPending && (
+                    <View style={styles.spinnerCustom}>
+                        <ActivityIndicator size="small" color="#ff5722" />
+                    </View>
+                )}
+                {this.isEmpty(
+                    this.props.productCartDetail.productDetail
+                ) ? null : (
+                    <Content>
+                        <Card>
+                            <CardItem>
+                                <Left>
+                                    <Thumbnail
+                                        square
+                                        source={{
+                                            uri: `${baseUrl}${
+                                                this.props.productCartDetail
+                                                    .productDetail.image
+                                            }`
+                                        }}
+                                    />
+                                    <Body>
+                                        <Text>
+                                            {
+                                                this.props.productCartDetail
+                                                    .productDetail.name
+                                            }
+                                        </Text>
+                                        <Text style={{ color: "#ff5722" }}>
+                                            Rp.
+                                            {this.props.productCartDetail.productDetail.price
+                                                .toString()
+                                                .replace(
+                                                    /(\d)(?=(\d{3})+(?!\d))/g,
+                                                    "$1."
+                                                )}
+                                        </Text>
+                                    </Body>
+                                </Left>
+                            </CardItem>
+                        </Card>
                         <Container
                             style={{
-                                justifyContent: "flex-end",
-                                flexDirection: "row"
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                marginRight: 17,
+                                marginLeft: 17,
+                                marginTop: 17
                             }}
                         >
-                            <Button
-                                rounded
-                                bordered
-                                success
-                                onPress={this.decrementQuantity}
+                            <Text>Jumlah</Text>
+                            <Container
+                                style={{
+                                    justifyContent: "flex-end",
+                                    flexDirection: "row"
+                                }}
                             >
-                                <Icon type="AntDesign" name="minus" />
-                            </Button>
-                            <Item style={{ width: 40, height: 38, margin: 3 }}>
-                                <Input
-                                    style={{ width: 1, textAlign: "center" }}
-                                    value={this.state.quantity.toString()}
-                                    keyboardType="numeric"
-                                    onEndEditing={this.editingText}
-                                    onChangeText={this.textChange}
-                                />
-                            </Item>
-                            <Button
-                                rounded
-                                bordered
-                                success
-                                onPress={this.increment}
-                            >
-                                <Icon type="AntDesign" name="plus" />
-                            </Button>
+                                <Button
+                                    rounded
+                                    bordered
+                                    success
+                                    onPress={this.decrementQuantity}
+                                >
+                                    <Icon type="AntDesign" name="minus" />
+                                </Button>
+                                <Item
+                                    style={{ width: 40, height: 38, margin: 3 }}
+                                >
+                                    <Input
+                                        style={{
+                                            width: 1,
+                                            textAlign: "center"
+                                        }}
+                                        value={this.state.quantity.toString()}
+                                        keyboardType="numeric"
+                                        onEndEditing={this.editingText}
+                                        onChangeText={this.textChange}
+                                    />
+                                </Item>
+                                <Button
+                                    rounded
+                                    bordered
+                                    success
+                                    onPress={this.increment}
+                                >
+                                    <Icon type="AntDesign" name="plus" />
+                                </Button>
+                            </Container>
                         </Container>
-                    </Container>
-                    <Content>
-                        <Form>
-                            <Item stackedLabel>
-                                <Label>Note For Seller (Optional)</Label>
-                                <Input />
-                            </Item>
-                        </Form>
+                        <Content>
+                            <Form>
+                                <Item stackedLabel>
+                                    <Label>Note For Seller (Optional)</Label>
+                                    <Input />
+                                </Item>
+                            </Form>
+                        </Content>
                     </Content>
-                </Content>
+                )}
+
                 <Footer style={styles.footerCustom}>
                     <Container
                         style={{
@@ -153,7 +187,10 @@ class AddBuyNow extends Component {
                         <Text>Total Harga</Text>
                         <Text style={{ color: "#ff5722" }}>
                             Rp.{" "}
-                            {(this.state.quantity * getProductPrice)
+                            {(
+                                this.state.quantity *
+                                this.props.productCartDetail.productDetail.price
+                            )
                                 .toString()
                                 .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}
                         </Text>
@@ -162,7 +199,8 @@ class AddBuyNow extends Component {
                         style={styles.buttonCustom}
                         onPress={() =>
                             this.props.navigation.navigate("CheckOutScreen", {
-                                productPrice: getProductPrice
+                                productPrice: this.props.productCartDetail
+                                    .productDetail.price
                             })
                         }
                     >
@@ -190,7 +228,26 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         paddingBottom: 8,
         justifyContent: "space-between"
+    },
+    spinnerCustom: {
+        flex: 1,
+        justifyContent: "center"
     }
 });
 
-export default AddBuyNow;
+const mapStateToProps = state => {
+    return {
+        productCartDetail: state.products
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchDataDetail: id => dispatch(fetchDataDetail(id))
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AddBuyNow);

@@ -21,7 +21,6 @@ class Details extends Component {
                 - {x}
             </Text>
         ));
-        console.log(test);
 
         return (
             <ScrollView>
