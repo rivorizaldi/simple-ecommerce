@@ -1,46 +1,64 @@
-import { Button, Container, Form, Input, Item, Label, Text } from "native-base";
+import {
+    Container,
+    Content,
+    Form,
+    H1,
+    Input,
+    Item,
+    Label,
+    Text
+} from "native-base";
 import React, { Component } from "react";
-import { StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 class Register extends Component {
-    static navigationOptions = {
-        headerLeft: null
-    };
     render() {
         return (
             <Container>
-                <Form>
-                    <Item floatingLabel style={{ marginRight: 15 }}>
-                        <Label>Username</Label>
-                        <Input />
-                    </Item>
-                    <Item floatingLabel style={{ marginRight: 15 }}>
-                        <Label>Password</Label>
-                        <Input />
-                    </Item>
-                </Form>
-                <Button>
-                    <Text>Register</Text>
-                </Button>
+                <Content
+                    contentContainerStyle={{
+                        backgroundColor: "#fff",
+                        flex: 1,
+                        justifyContent: "center",
+                        paddingRight: 16,
+                        paddingLeft: 16
+                    }}
+                >
+                    <H1 style={{ textAlign: "center", fontSize: 30 }}>
+                        Sign Up
+                    </H1>
+                    <Form>
+                        <Item stackedLabel style={{ marginRight: 15 }}>
+                            <Label>Username</Label>
+                            <Input />
+                        </Item>
+                        <Item stackedLabel style={{ marginRight: 15 }}>
+                            <Label>Email</Label>
+                            <Input />
+                        </Item>
+                        <Item stackedLabel style={{ marginRight: 15 }}>
+                            <Label>Password</Label>
+                            <Input />
+                        </Item>
+                        <Form
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                marginTop: 8
+                            }}
+                        >
+                            <Label style={{ marginRight: 1 }}>
+                                Have An Account ?
+                            </Label>
+                            <TouchableOpacity onPress={() => {}}>
+                                <Text>Sign In</Text>
+                            </TouchableOpacity>
+                        </Form>
+                    </Form>
+                </Content>
             </Container>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    icon: {
-        color: "gray",
-        fontSize: 200
-    },
-    text: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "gray"
-    }
-});
 
 export default Register;

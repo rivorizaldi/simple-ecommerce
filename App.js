@@ -8,6 +8,7 @@ import {
 } from "react-navigation";
 import { Provider } from "react-redux";
 import store from "./app/redux/store";
+import Account from "./app/screens/Account";
 import AddBuyNow from "./app/screens/AddBuyNow";
 import AddToCart from "./app/screens/AddToCart";
 import Cart from "./app/screens/Cart";
@@ -32,8 +33,8 @@ const AppTabNavigator = createBottomTabNavigator(
                 title: "Cart"
             })
         },
-        LoginScreen: {
-            screen: Login,
+        AccountScreen: {
+            screen: Account,
             navigationOptions: () => ({
                 title: "Account"
             })
@@ -49,7 +50,7 @@ const AppTabNavigator = createBottomTabNavigator(
                     iconName = "home";
                 } else if (routeName === "CartScreen") {
                     iconName = `shopping-cart`;
-                } else if (routeName === "LoginScreen") {
+                } else if (routeName === "AccountScreen") {
                     iconName = "user-alt";
                 }
 
@@ -78,7 +79,7 @@ AppTabNavigator.navigationOptions = ({ navigation }) => {
         title = "Product List";
     } else if (routeName === "CartScreen") {
         title = "Cart";
-    } else if (routeName === "LoginScreen") {
+    } else if (routeName === "AccountScreen") {
         title = "Profile";
     }
     return { title };
@@ -136,10 +137,34 @@ const AppNavigator = createStackNavigator(
                 headerTintColor: "#000"
             })
         },
-        Register: {
+        RegisterScreen: {
             screen: Register,
             navigationOptions: () => ({
                 title: "Register",
+                headerStyle: {
+                    backgroundColor: "#fff",
+                    fontFamily: "Montserrat-Bold",
+                    fontWeight: "bold"
+                },
+                headerTintColor: "#000"
+            })
+        },
+        LoginScreen: {
+            screen: Login,
+            navigationOptions: () => ({
+                title: "Login",
+                headerStyle: {
+                    backgroundColor: "#fff",
+                    fontFamily: "Montserrat-Bold",
+                    fontWeight: "bold"
+                },
+                headerTintColor: "#000"
+            })
+        },
+        AccountScreen: {
+            screen: Account,
+            navigationOptions: () => ({
+                title: "Acount",
                 headerStyle: {
                     backgroundColor: "#fff",
                     fontFamily: "Montserrat-Bold",

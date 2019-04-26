@@ -15,7 +15,6 @@ class ProductList extends Component {
     }
 
     render() {
-        console.log("object", this.props.productList.productList);
         return (
             <Container>
                 {this.props.productList.isPending && (

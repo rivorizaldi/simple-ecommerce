@@ -1,72 +1,64 @@
-import { Body, Button, Card, CardItem, Text } from "native-base";
+import {
+    Container,
+    Content,
+    Form,
+    H1,
+    Input,
+    Item,
+    Label,
+    Text
+} from "native-base";
 import React, { Component } from "react";
-import { Image, StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 class Login extends Component {
     render() {
         return (
-            <Card>
-                <CardItem
-                    header
-                    bordered
-                    style={{
+            <Container>
+                <Content
+                    contentContainerStyle={{
+                        backgroundColor: "#fff",
+                        flex: 1,
                         justifyContent: "center",
-                        flexDirection: "column"
+                        paddingRight: 16,
+                        paddingLeft: 16
                     }}
                 >
-                    <Image
-                        style={{ height: 100, width: 100 }}
-                        source={require("../assets/img/male-circle-512.png")}
-                    />
-                </CardItem>
-                <CardItem bordered>
-                    <Body
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between"
-                        }}
-                    >
-                        <Text>Name</Text>
-                        <Text>Rivo Rizaldi</Text>
-                    </Body>
-                </CardItem>
-                <CardItem bordered>
-                    <Body
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between"
-                        }}
-                    >
-                        <Text>Email</Text>
-                        <Text>Rivo.rizaldy18@gmail.com</Text>
-                    </Body>
-                </CardItem>
-                <CardItem bordered>
-                    <Body
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between"
-                        }}
-                    >
-                        <Text>Phone Number</Text>
-                        <Text>085298826043</Text>
-                    </Body>
-                </CardItem>
-                <CardItem footer bordered>
-                    <Button full danger style={{ flex: 1 }}>
-                        <Text>Sign Out</Text>
-                    </Button>
-                </CardItem>
-            </Card>
+                    <H1 style={{ textAlign: "center", fontSize: 30 }}>
+                        Sign In
+                    </H1>
+                    <Form>
+                        <Item stackedLabel style={{ marginRight: 15 }}>
+                            <Label>Username</Label>
+                            <Input />
+                        </Item>
+                        <Item stackedLabel style={{ marginRight: 15 }}>
+                            <Label>Password</Label>
+                            <Input />
+                        </Item>
+                        <Form
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                marginTop: 8
+                            }}
+                        >
+                            <Label style={{ marginRight: 1 }}>
+                                Dont Have Account ?
+                            </Label>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.nav;
+                                }}
+                            >
+                                <Text>Sign Up</Text>
+                            </TouchableOpacity>
+                        </Form>
+                    </Form>
+                </Content>
+            </Container>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        alignItems: "center",
-        alignSelf: "stretch"
-    }
-});
 
 export default Login;

@@ -1,5 +1,11 @@
-import { DECREMENT_CART_DATA, DELETE_CART_DATA, FETCH_CART_LIST_DATA, INCREMENT_CART_DATA, STORE_CART_DATA } from "../actions/constans";
-import console = require("console");
+import {
+    DECREMENT_CART_DATA,
+    DELETE_CART_ITEM,
+    // DELETE_CART_DATA,
+    FETCH_CART_LIST_DATA,
+    INCREMENT_CART_DATA,
+    STORE_CART_DATA
+} from "../actions/constans";
 
 const initialState = {
     cartList: [],
@@ -43,37 +49,12 @@ const carts = (state = initialState, action) => {
                 isFulfilled: true,
                 isPending: false
             };
-        case `${STORE_CART_DATA}_REJECTED`:
+        case DELETE_CART_ITEM:
             return {
                 ...state,
-                isRejected: true,
-                isPending: false,
-                error: "there is something wrong!"
-            };
-        case `${DELETE_CART_DATA}_PENDING`:
-            return {
-                ...state,
-                cartList: [],
-                isPending: true
-            };
-		case `${DELETE_CART_DATA}_FULFILLED`:
-			const filter = state.cartList.filter(
-				item => item.id !== action.payload)
-			console.log("delete filter", filter)
-            return {
-                ...state,
-                isFulfilled: true,
-                isPending: false,
                 cartList: state.cartList.filter(
-                    item => item.id !== action.payload
+                    item => item.id !== action.payload.id
                 )
-            };
-        case `${DELETE_CART_DATA}_REJECTED`:
-            return {
-                ...state,
-                isRejected: true,
-                isPending: false,
-                error: "there is something wrong!"
             };
         case INCREMENT_CART_DATA:
             return {

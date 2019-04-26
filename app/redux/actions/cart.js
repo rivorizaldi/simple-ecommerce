@@ -7,6 +7,7 @@ import {
 import {
     DECREMENT_CART_DATA,
     DELETE_CART_DATA,
+    DELETE_CART_ITEM,
     FETCH_CART_LIST_DATA,
     INCREMENT_CART_DATA,
     STORE_CART_DATA,
@@ -38,6 +39,13 @@ export const deleteCart = id => {
     return {
         type: DELETE_CART_DATA,
         payload: deleteCartItem(id)
+    };
+};
+
+export const deleteCartItems = id => {
+    return {
+        type: DELETE_CART_ITEM,
+        payload: { id }
     };
 };
 

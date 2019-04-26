@@ -61,12 +61,18 @@ export const deleteCartItem = id => {
         axios
             .delete(`${ordersEndpoint}/${id}`)
             .then(response => {
-                console.log("deleteid", id);
-                console.log("delete", response.data.id);
                 return resolve(response.data.id);
             })
             .catch(function(error) {
                 console.log(error);
             });
+    });
+};
+
+export const login = user => {
+    return new Promise((resolve, reject) => {
+        axios.post(ordersEndpoint, user).then(res => {
+            return resolve(res.data.data);
+        });
     });
 };
