@@ -2,17 +2,14 @@ import { Body, Button, Card, CardItem, Text } from "native-base";
 import React, { Component } from "react";
 import { Image } from "react-native";
 import { connect } from "react-redux";
-import { getUserData } from "../redux/actions/user";
 
 class Account extends Component {
     componentDidMount() {
-        if (this.props.isLoggedIn) {
-            this.props.navigation.navigate("LoginScreen");
-        } else {
-            this.props.navigation.addListener("didFocus", () => {
-                this.props.getUserData(access_token);
-            });
-        }
+        this.props.navigation.addListener("willFocus", () => {
+            if (!this.props.user.isLoggedIn) {
+                this.props.navigation.navigate("LoginScreen");
+            }
+        });
     }
 
     render() {
@@ -38,8 +35,8 @@ class Account extends Component {
                             justifyContent: "space-between"
                         }}
                     >
-                        <Text>Name</Text>
-                        <Text>Rivo Rizaldi</Text>
+                        <Text>username</Text>
+                        <Text>{this.props.user.userData.username}</Text>
                     </Body>
                 </CardItem>
                 <CardItem bordered>
@@ -50,7 +47,7 @@ class Account extends Component {
                         }}
                     >
                         <Text>Email</Text>
-                        <Text>Rivo.rizaldy18@gmail.com</Text>
+                        <Text>{this.props.user.userData.email}</Text>
                     </Body>
                 </CardItem>
                 <CardItem bordered>
@@ -65,7 +62,14 @@ class Account extends Component {
                     </Body>
                 </CardItem>
                 <CardItem footer bordered>
-                    <Button full danger style={{ flex: 1 }}>
+                    <Button
+                        full
+                        danger
+                        style={{ flex: 1 }}
+                        onPress={() => {
+                            this.props.navigation.navigate("LoginScreen");
+                        }}
+                    >
                         <Text>Sign Out</Text>
                     </Button>
                 </CardItem>
@@ -80,13 +84,13 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        getUserData: access_token => dispatch(getUserData(access_token))
-    };
-};
+// const mapDispatchToProps = dispatch => {
+//     return {
+//         fetchUseData: access_token => dispatch(fetchUseData(access_token))
+//     };
+// };
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    null
 )(Account);

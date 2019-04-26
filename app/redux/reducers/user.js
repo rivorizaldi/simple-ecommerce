@@ -1,52 +1,31 @@
-import {
-    FETCH_PRODUCT_DETAIL_DATA,
-    FETCH_PRODUCT_LIST_DATA
-} from "../actions/constans";
+import { STORE_USER_DATA } from "../actions/constans";
 
 const initialState = {
-    isLoggedIn: true,
+    isLoggedIn: false,
     isFulfilled: false,
     isRejected: false,
     isPending: false,
-    productDetail: {}
+    userData: {},
+    token: {}
 };
 
-const products = (state = initialState, action) => {
+const user = (state = initialState, action) => {
     switch (action.type) {
-        case `${FETCH_PRODUCT_LIST_DATA}_PENDING`:
+        case `${STORE_USER_DATA}_PENDING`:
             return {
                 ...state,
-                productList: [],
                 isPending: true
             };
-        case `${FETCH_PRODUCT_LIST_DATA}_FULFILLED`:
+        case `${STORE_USER_DATA}_FULFILLED`:
             return {
                 ...state,
                 isFulfilled: true,
                 isPending: false,
-                productList: action.payload
+                isLoggedIn: true,
+                userData: action.payload.user,
+                token: action.payload.access_token
             };
-        case `${FETCH_PRODUCT_LIST_DATA}_REJECTED`:
-            return {
-                ...state,
-                isRejected: true,
-                isPending: false,
-                error: action.payload
-            };
-        case `${FETCH_PRODUCT_DETAIL_DATA}_PENDING`:
-            return {
-                ...state,
-                productDetail: {},
-                isPending: true
-            };
-        case `${FETCH_PRODUCT_DETAIL_DATA}_FULFILLED`:
-            return {
-                ...state,
-                isFulfilled: true,
-                isPending: false,
-                productDetail: action.payload
-            };
-        case `${FETCH_PRODUCT_DETAIL_DATA}_REJECTED`:
+        case `${STORE_USER_DATA}_REJECTED`:
             return {
                 ...state,
                 isRejected: true,
@@ -59,4 +38,4 @@ const products = (state = initialState, action) => {
     }
 };
 
-export default products;
+export default user;

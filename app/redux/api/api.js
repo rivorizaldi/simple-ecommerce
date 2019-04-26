@@ -1,5 +1,9 @@
 import axios from "axios";
-import { ordersEndpoint, productsEndpoint } from "../../helper/routes";
+import {
+    ordersEndpoint,
+    productsEndpoint,
+    userLoginEndpoint
+} from "../../helper/routes";
 
 export const getProductList = () => {
     return new Promise((resolve, reject) => {
@@ -73,6 +77,14 @@ export const login = user => {
     return new Promise((resolve, reject) => {
         axios.post(ordersEndpoint, user).then(res => {
             return resolve(res.data.data);
+        });
+    });
+};
+
+export const storeUserData = (email, password) => {
+    return new Promise((resolve, reject) => {
+        axios.post(userLoginEndpoint, { email, password }).then(res => {
+            return resolve(res.data);
         });
     });
 };

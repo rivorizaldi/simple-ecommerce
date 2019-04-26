@@ -1,4 +1,5 @@
 import {
+    Button,
     Container,
     Content,
     Form,
@@ -9,9 +10,18 @@ import {
     Text
 } from "native-base";
 import React, { Component } from "react";
-import { TouchableOpacity } from "react-native";
+import { BackHandler, TouchableOpacity } from "react-native";
 
 class Register extends Component {
+    componentDidMount() {
+        this.props.navigation.addListener("willFocus", () => {
+            BackHandler.addEventListener("hardwareBackPress", () => {
+                this.props.navigation.navigate("LoginScreen");
+                return true;
+            });
+        });
+    }
+
     render() {
         return (
             <Container>
@@ -40,6 +50,17 @@ class Register extends Component {
                             <Label>Password</Label>
                             <Input />
                         </Item>
+                        <Button
+                            block
+                            onPress={() => {}}
+                            style={{
+                                marginTop: 8,
+                                marginLeft: 15,
+                                marginRight: 15
+                            }}
+                        >
+                            <Text>Sign Up</Text>
+                        </Button>
                         <Form
                             style={{
                                 flexDirection: "row",
@@ -50,7 +71,13 @@ class Register extends Component {
                             <Label style={{ marginRight: 1 }}>
                                 Have An Account ?
                             </Label>
-                            <TouchableOpacity onPress={() => {}}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.navigation.navigate(
+                                        "LoginScreen"
+                                    );
+                                }}
+                            >
                                 <Text>Sign In</Text>
                             </TouchableOpacity>
                         </Form>
